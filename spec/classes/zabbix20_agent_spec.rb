@@ -8,9 +8,23 @@ describe 'zabbix20::agent' do
     }
   end
 
+  let :constant_parameter_defaults do
+    {
+      :service_ensure   => 'running',
+      :service_enable   => 'true',
+      :manage_firewall  => 'true',
+      :listen_port      => '10051',
+    }
+  end
+
+  let :params do
+    constant_parameter_defaults
+  end
+
   it { should include_class('zabbix20') }
   it { should include_class('zabbix20::params') }
-  it { should include_class('zabbix20::agent::firewall')}
+  it { should include_class('zabbix20::agent::firewall') }
+  it { should contain_class('zabbix20::agent::config') }
 
   it do
     should contain_package('zabbix20-agent').with({
@@ -21,8 +35,8 @@ describe 'zabbix20::agent' do
 
   it do
     should contain_service('zabbix-agent').with({
-      'ensure'      => 'running',
-      'enable'      => 'true',
+      'ensure'      => params[:service_ensure],
+      'enable'      => params[:service_enable],
       'name'        => 'zabbix-agent',
       'hasstatus'   => 'true',
       'hasrestart'  => 'true',
@@ -30,6 +44,17 @@ describe 'zabbix20::agent' do
     })
   end
   
+  it do
+    should contain_file('/etc/zabbix/zabbix_agentd.conf.d').with({
+      'ensure'  => 'directory',
+      'path'    => '/etc/zabbix/zabbix_agentd.conf.d',
+      'owner'   => 'root',
+      'group'   => 'zabbix',
+      'mode'    => '0775',
+      'require' => 'File[/etc/zabbix]',
+    })
+  end
+
   it do
     should contain_file('/var/run/zabbix').with({
       'ensure'    => 'directory',
@@ -71,5 +96,13 @@ describe 'zabbix20::agent' do
       'name'    => 'zabbix',
       'system'  => 'true',
     })
+  end
+
+  describe 'zabbix20::agent::config' do
+    include_context 'zabbix20::agent::config'
+  end
+
+  describe 'zabbix20::agent::firewall' do
+    include_context 'zabbix20::agent::firewall'
   end
 end

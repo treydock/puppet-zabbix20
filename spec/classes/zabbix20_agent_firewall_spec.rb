@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'zabbix20::agent::firewall' do
+shared_context 'zabbix20::agent::firewall' do
 
   let :facts do
     {
@@ -14,7 +14,7 @@ describe 'zabbix20::agent::firewall' do
     should contain_firewall('100 zabbix-agent').with({
       'ensure'	=> 'present',
       'action'	=> 'accept',
-      'port'		=> '10051',
+      'port'		=> params[:listen_port],
       'chain'		=> 'INPUT',
       'proto'		=> 'tcp',
     })

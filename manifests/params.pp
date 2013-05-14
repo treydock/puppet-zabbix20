@@ -21,14 +21,50 @@ class zabbix20::params {
       $conf_dir                         = '/etc/zabbix'
       $log_dir                          = '/var/log/zabbix'
       $pid_dir                          = '/var/run/zabbix'
+      $agent_conf_path                  = '/etc/zabbix_agentd.conf'
+      $agent_include_dir                = "${conf_dir}/zabbix_agentd.conf.d"
       $agent_service_name               = 'zabbix-agent'
       $agent_service_has_status         = true
       $agent_service_has_restart        = true
+      $agent_log_file_size              = '0'
     }
 
     default: {
       fail("Unsupported osfamily: ${::osfamily}, module ${module_name} only support osfamily RedHat")
     }
+  }
+
+  $agent_server         = $::zabbix_agent_server ? {
+    undef   => undef,
+    default => $::zabbix_agent_server,
+  }
+
+  $agent_server_active  = $::zabbix_agent_server_active ? {
+    undef   => $agent_server,
+    default => $::zabbix_agent_server_active
+  }
+
+  # Agent - Default configuration values - non-OS specific
+  $agent_config_hash                    = {
+    'pid_file'                => "${pid_dir}/zabbix_agentd.pid",
+    'log_file'                => "${log_dir}/zabbix_agentd.log",
+    'log_file_size'           => $agent_log_file_size,
+    'debug_level'             => 'UNSET',
+    'source_ip'               => 'UNSET',
+    'enable_remote_commands'  => 'UNSET',
+    'log_remote_commands'     => 'UNSET',
+    'listen_ip'               => '0.0.0.0',
+    'start_agents'            => 'UNSET',
+    'hostname'                => $::fqdn,
+    'hostname_item'           => 'UNSET',
+    'refresh_active_checks'   => 'UNSET',
+    'buffer_send'             => 'UNSET',
+    'buffer_size'             => 'UNSET',
+    'max_lines_per_second'    => 'UNSET',
+    'allow_root'              => 'UNSET',
+    'timeout'                 => 'UNSET',
+    'include'                 => $agent_include_dir,
+    'unsafe_user_parameters'  => 'UNSET',
   }
 
 }
