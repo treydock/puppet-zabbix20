@@ -1,37 +1,18 @@
 # == Class: zabbix20
 #
-# Full description of class zabbix20 here.
-#
 # === Parameters
-#
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
-# === Variables
-#
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if it
-#   has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should not be used in preference to class parameters  as of
-#   Puppet 2.6.)
 #
 # === Examples
 #
-#  class { zabbix20: }
+#  class { 'zabbix20': }
 #
 # === Authors
 #
-# Author Name <author@domain.com>
+# Trey Dockendorf <treydock@gmail.com>
 #
 # === Copyright
 #
-# Copyright 2013 Your name here, unless otherwise noted.
+# Copyright 2013 Trey Dockendorf
 #
 class zabbix20 (
   $package_name       = $zabbix::params::package_name,
@@ -49,15 +30,21 @@ class zabbix20 (
   $group_gid          = undef
 ) inherits zabbix20::params {
 
-  # TODO : CONVERT STR2BOOL HERE
+  $manage_user_real = is_string($manage_user) ? {
+    true    => str2bool($manage_user),
+    false   => $manage_user,
+  }
+  validate_bool($manage_user_real)
+
   $manage_group_real = is_string($manage_group) ? {
     true    => str2bool($manage_group),
     false   => $manage_group,
   }
+  validate_bool($manage_group_real)
 
   $file_require = $manage_group_real ? {
-    true  => [ Package['zabbix-agent'], Group['zabbix'] ],
-    false => Package['zabbix-agent'],
+    true  => [ Package['zabbix20-agent'], Group['zabbix'] ],
+    false => Package['zabbix20-agent'],
   }
 
   package { 'zabbix20':

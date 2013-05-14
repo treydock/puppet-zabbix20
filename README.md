@@ -1,6 +1,6 @@
 # puppet-zabbix20
 
-UNKNOWN
+Puppet module to manage Zabbix 2.0.x installations
 
 ## Support
 
