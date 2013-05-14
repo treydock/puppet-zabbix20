@@ -25,7 +25,10 @@ class zabbix20::params {
 
   case $::osfamily {
     'RedHat': {
-
+      $package_name       = 'zabbix20'
+      $conf_dir           = '/etc/zabbix'
+      $log_dir            = '/var/log/zabbix'
+      $pid_dir            = '/var/run/zabbix'
     }
 
     default: {
