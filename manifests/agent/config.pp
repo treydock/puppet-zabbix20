@@ -11,7 +11,7 @@
 # Copyright 2013 Trey Dockendorf
 #
 
-class zabbix20::agent::config(
+class zabbix20::agent::config (
   $pid_file                 = $zabbix20::params::agent_config_hash['pid_file'],
   $log_file                 = $zabbix20::params::agent_config_hash['log_file'],
   $log_file_size            = $zabbix20::params::agent_config_hash['log_file_size'],

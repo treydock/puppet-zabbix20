@@ -15,10 +15,11 @@
 # Copyright 2013 Trey Dockendorf
 #
 class zabbix20 (
-  $package_name       = $zabbix::params::package_name,
-  $conf_dir           = $zabbix::params::conf_dir,
-  $log_dir            = $zabbix::params::log_dir,
-  $pid_dir            = $zabbix::params::pid_dir,
+  $package_name       = $zabbix20::params::package_name,
+  $package_require    = $zabbix20::params::package_require,
+  $conf_dir           = $zabbix20::params::conf_dir,
+  $log_dir            = $zabbix20::params::log_dir,
+  $pid_dir            = $zabbix20::params::pid_dir,
   $manage_user        = true,
   $manage_group       = true,
   $user_name          = 'zabbix',
@@ -29,6 +30,14 @@ class zabbix20 (
   $group_name         = 'zabbix',
   $group_gid          = undef
 ) inherits zabbix20::params {
+
+  case $::osfamily {
+    'RedHat': {
+      include epel
+    }
+    default: {
+    }
+  }
 
   $manage_user_real = is_string($manage_user) ? {
     true    => str2bool($manage_user),
@@ -50,6 +59,7 @@ class zabbix20 (
   package { 'zabbix20':
     ensure  => 'present',
     name    => $package_name,
+    require => $package_require,
   }
 
   file { '/etc/zabbix':

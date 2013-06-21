@@ -8,12 +8,15 @@ describe 'zabbix20::agent' do
     }
   end
 
+  let(:node) { 'foo.example.com' }
+
   let :constant_parameter_defaults do
     {
       :service_ensure   => 'running',
       :service_enable   => 'true',
       :manage_firewall  => 'true',
-      :listen_port      => '10051',
+      :with_logrotate   => 'true',
+      :listen_port      => '10050',
     }
   end
 
@@ -21,15 +24,38 @@ describe 'zabbix20::agent' do
     constant_parameter_defaults
   end
 
+  it { should contain_class('zabbix20::params') }
   it { should include_class('zabbix20') }
-  it { should include_class('zabbix20::params') }
-  it { should include_class('zabbix20::agent::firewall') }
   it { should contain_class('zabbix20::agent::config') }
+
+  it do
+    should contain_firewall('100 zabbix-agent').with({
+      'ensure'	=> 'present',
+      'action'	=> 'accept',
+      'port'		=> params[:listen_port],
+      'chain'		=> 'INPUT',
+      'proto'		=> 'tcp',
+    })
+  end
+
+  it do
+    should contain_file('/etc/logrotate.d/zabbix-agent').with({
+      'ensure'  =>  'present',
+      'path'    => '/etc/logrotate.d/zabbix-agent',
+      'owner'   => 'root',
+      'group'   => 'root',
+      'mode'    => '0644',
+      'require' => 'Package[zabbix20-agent]',
+    }) \
+      .with_content(/^\/var\/log\/zabbix\/zabbix_agentd.log\s+{$/) \
+      .with_content(/^\s+create 0664 zabbix zabbix$/)
+  end
 
   it do
     should contain_package('zabbix20-agent').with({
       'ensure'  => 'present',
       'name'    => 'zabbix20-agent',
+      'require' => 'Yumrepo[epel]',
     })
   end
 
@@ -45,13 +71,12 @@ describe 'zabbix20::agent' do
   end
   
   it do
-    should contain_file('/etc/zabbix/zabbix_agentd.conf.d').with({
+    should contain_file('/etc/zabbix_agentd.conf.d').with({
       'ensure'  => 'directory',
-      'path'    => '/etc/zabbix/zabbix_agentd.conf.d',
+      'path'    => '/etc/zabbix_agentd.conf.d',
       'owner'   => 'root',
-      'group'   => 'zabbix',
-      'mode'    => '0775',
-      'require' => 'File[/etc/zabbix]',
+      'group'   => 'root',
+      'mode'    => '0755',
     })
   end
 
@@ -98,11 +123,5 @@ describe 'zabbix20::agent' do
     })
   end
 
-  describe 'zabbix20::agent::config' do
-    include_context 'zabbix20::agent::config'
-  end
-
-  describe 'zabbix20::agent::firewall' do
-    include_context 'zabbix20::agent::firewall'
-  end
+  include_context 'zabbix20::agent::config'
 end

@@ -9,3 +9,4 @@ project_page 'http://github.com/treydock/puppet-zabbix20'
 
 ## Add dependencies, if any:
 dependency 'puppetlabs/stdlib', '>=3.2.0 <5.0.0'
+dependency 'puppetlabs/firewall', '~>0.3.1'

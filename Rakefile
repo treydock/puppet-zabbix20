@@ -1,9 +1,4 @@
-require 'rubygems'
-require 'bundler/setup'
-
-Bundler.require :default
-
-require 'rspec/core/rake_task'
+require 'puppet-lint/tasks/puppet-lint'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'rspec-system/rake_task'
 
@@ -19,53 +14,6 @@ end
 # Disable puppet-lint checks
 PuppetLint.configuration.send("disable_80chars")
 PuppetLint.configuration.send("disable_class_inherits_from_params_class")
-
-namespace :bootstrap do
-  module_name = 'zabbix20'
-
-  desc "Bootstrap spec files using project's name"
-  task :spec, [:noop] do |t, args|
-    noop = args[:noop]
-    files =[]
-    Dir[File.join('spec', '**', '*skeleton*.{rb,pp}')].each do |file|
-      files << file
-    end
-  
-    files.each do |file|
-      file_new = File.join(File.dirname(file), File.basename(file).gsub(/skeleton/, module_name))
-      stdout = "Renaming: #{file} ==> #{file_new}"
-      stdout << " (noop)" if noop
-      puts stdout
-      File.rename(file, file_new) unless noop
-    end
-  end
-end
-
-desc 'Run all bootstrap tasks'
-task :bootstrap, [:noop, :git_parent] do |t, args|
-  args.with_defaults(:noop => false)
-  # Set noop true if word noop is used
-  args[:noop] == true if args[:noop] =~ /noop/
-  Rake.application.in_namespace(:bootstrap) do |b|
-    b.tasks.each do |task|
-      Rake::Task[task].invoke(args[:noop])
-    end
-  end
-  Rake::Task['git:init'].invoke(args[:noop], args[:git_parent])
-end
-
-# REF: https://github.com/Arcath/Rake-Tasks
-namespace :git do
-  desc "Perform git init and connect to a parent"
-  task :init, [:noop, :parent] do |t, args|
-    next if args[:noop]
-    system('git init')
-    system('git add .')
-    if args[:parent]
-      system("git remote add origin #{args[:parent]}")
-    end
-  end
-end
 
 # REF: https://gist.github.com/indirect/2922427
 namespace :source do

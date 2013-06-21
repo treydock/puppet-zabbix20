@@ -17,12 +17,14 @@ class zabbix20::params {
   case $::osfamily {
     'RedHat': {
       $package_name                     = 'zabbix20'
+      $package_require                  = Yumrepo['epel']
       $agent_package_name               = 'zabbix20-agent'
       $conf_dir                         = '/etc/zabbix'
       $log_dir                          = '/var/log/zabbix'
       $pid_dir                          = '/var/run/zabbix'
       $agent_conf_path                  = '/etc/zabbix_agentd.conf'
-      $agent_include_dir                = "${conf_dir}/zabbix_agentd.conf.d"
+      $agent_include_dir                = '/etc/zabbix_agentd.conf.d'
+      $agent_logrotate_file             = '/etc/logrotate.d/zabbix-agent'
       $agent_service_name               = 'zabbix-agent'
       $agent_service_has_status         = true
       $agent_service_has_restart        = true
@@ -35,7 +37,7 @@ class zabbix20::params {
   }
 
   $agent_server         = $::zabbix_agent_server ? {
-    undef   => undef,
+    undef   => '127.0.0.1',
     default => $::zabbix_agent_server,
   }
 

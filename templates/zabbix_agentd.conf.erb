@@ -8,7 +8,7 @@
 #
 # Mandatory: no
 # Default:
-PidFile=/var/run/zabbix/zabbix_agentd.pid
+PidFile=<%= @pid_file %>
 
 ### Option: LogFile
 #	Name of log file.
@@ -18,7 +18,7 @@ PidFile=/var/run/zabbix/zabbix_agentd.pid
 # Default:
 # LogFile=
 
-LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFile=<%= @log_file %>
 
 ### Option: LogFileSize
 #	Maximum size of log file in MB.
@@ -27,7 +27,7 @@ LogFile=/var/log/zabbix/zabbix_agentd.log
 # Mandatory: no
 # Range: 0-1024
 # Default:
-LogFileSize=0
+LogFileSize=<%= @log_file_size %>
 
 ### Option: DebugLevel
 #	Specifies debug level
@@ -41,6 +41,9 @@ LogFileSize=0
 # Range: 0-4
 # Default:
 # DebugLevel=3
+<% if @debug_level != 'UNSET' -%>
+DebugLevel=<%= @debug_level %>
+<% end -%>
 
 ### Option: SourceIP
 #	Source IP address for outgoing connections.
@@ -48,6 +51,9 @@ LogFileSize=0
 # Mandatory: no
 # Default:
 # SourceIP=
+<% if @source_ip != 'UNSET' -%>
+SourceIP=<%= @source_ip %>
+<% end -%>
 
 ### Option: EnableRemoteCommands
 #	Whether remote commands from Zabbix server are allowed.
@@ -57,6 +63,9 @@ LogFileSize=0
 # Mandatory: no
 # Default:
 # EnableRemoteCommands=0
+<% if @enable_remote_commands != 'UNSET' -%>
+EnableRemoteCommands=<%= @enable_remote_commands %>
+<% end -%>
 
 ### Option: LogRemoteCommands
 #	Enable logging of executed shell commands as warnings.
@@ -66,6 +75,9 @@ LogFileSize=0
 # Mandatory: no
 # Default:
 # LogRemoteCommands=0
+<% if @log_remote_commands != 'UNSET' -%>
+LogRemoteCommands=<%= @log_remote_commands %>
+<% end -%>
 
 ##### Passive checks related
 
@@ -79,7 +91,11 @@ LogFileSize=0
 # Default:
 # Server=
 
+<% if @server != 'UNSET' -%>
+Server=<%= @server %>
+<% else -%>
 Server=127.0.0.1
+<% end -%>
 
 ### Option: ListenPort
 #	Agent will listen on this port for connections from the server.
@@ -88,6 +104,9 @@ Server=127.0.0.1
 # Range: 1024-32767
 # Default:
 # ListenPort=10050
+<% if @listen_port != 'UNSET' -%>
+ListenPort=<%= @listen_port %>
+<% end -%>
 
 ### Option: ListenIP
 #	List of comma delimited IP addresses that the agent should listen on.
@@ -96,6 +115,9 @@ Server=127.0.0.1
 # Mandatory: no
 # Default:
 # ListenIP=0.0.0.0
+<% if @listen_ip != 'UNSET' -%>
+ListenIP=<%= @listen_ip %>
+<% end -%>
 
 ### Option: StartAgents
 #	Number of pre-forked instances of zabbix_agentd that process passive checks.
@@ -105,6 +127,9 @@ Server=127.0.0.1
 # Range: 0-100
 # Default:
 # StartAgents=3
+<% if @start_agents != 'UNSET' -%>
+StartAgents=<%= @start_agents %>
+<% end -%>
 
 ##### Active checks related
 
@@ -120,7 +145,11 @@ Server=127.0.0.1
 # Default:
 # ServerActive=
 
+<% if @server_active != 'UNSET' -%>
+ServerActive=<%= @server_active %>
+<% else -%>
 ServerActive=127.0.0.1
+<% end -%>
 
 ### Option: Hostname
 #	Unique, case sensitive hostname.
@@ -131,7 +160,7 @@ ServerActive=127.0.0.1
 # Default:
 # Hostname=
 
-Hostname=Zabbix server
+Hostname=<%= @hostname %>
 
 ### Option: HostnameItem
 #	Item used for generating Hostname if it is undefined.
@@ -140,6 +169,9 @@ Hostname=Zabbix server
 # Mandatory: no
 # Default:
 # HostnameItem=system.hostname
+<% if @hostname_item != 'UNSET' -%>
+HostnameItem=<%= @hostname_item %>
+<% end -%>
 
 ### Option: RefreshActiveChecks
 #	How often list of active checks is refreshed, in seconds.
@@ -148,6 +180,9 @@ Hostname=Zabbix server
 # Range: 60-3600
 # Default:
 # RefreshActiveChecks=120
+<% if @refresh_active_checks != 'UNSET' -%>
+RefreshActiveChecks=<%= @refresh_active_checks %>
+<% end -%>
 
 ### Option: BufferSend
 #	Do not keep data longer than N seconds in buffer.
@@ -156,6 +191,9 @@ Hostname=Zabbix server
 # Range: 1-3600
 # Default:
 # BufferSend=5
+<% if @buffer_send != 'UNSET' -%>
+BufferSend=<%= @buffer_send %>
+<% end -%>
 
 ### Option: BufferSize
 #	Maximum number of values in a memory buffer. The agent will send
@@ -165,6 +203,9 @@ Hostname=Zabbix server
 # Range: 2-65535
 # Default:
 # BufferSize=100
+<% if @buffer_size != 'UNSET' -%>
+BufferSize=<%= @buffer_size %>
+<% end -%>
 
 ### Option: MaxLinesPerSecond
 #	Maximum number of new lines the agent will send per second to Zabbix Server
@@ -176,6 +217,9 @@ Hostname=Zabbix server
 # Range: 1-1000
 # Default:
 # MaxLinesPerSecond=100
+<% if @max_lines_per_second != 'UNSET' -%>
+MaxLinesPerSecond=<%= @max_lines_per_second %>
+<% end -%>
 
 ### Option: AllowRoot
 #	Allow the agent to run as 'root'. If disabled and the agent is started by 'root', the agent
@@ -186,6 +230,9 @@ Hostname=Zabbix server
 # Mandatory: no
 # Default:
 # AllowRoot=0
+<% if @allow_root != 'UNSET' -%>
+AllowRoot=<%= @allow_root %>
+<% end -%>
 
 ############ ADVANCED PARAMETERS #################
 
@@ -203,6 +250,9 @@ Hostname=Zabbix server
 # Range: 1-30
 # Default:
 # Timeout=3
+<% if @timeout != 'UNSET' -%>
+Timeout=<%= @timeout %>
+<% end -%>
 
 ### Option: Include
 #	You may include individual files or all files in a directory in the configuration file.
@@ -215,6 +265,10 @@ Hostname=Zabbix server
 # Include=/etc/zabbix_agentd.userparams.conf
 # Include=/etc/zabbix_agentd.conf.d/
 
+<% if @include != 'UNSET' -%>
+Include=<%= @include %>
+<% end -%>
+
 ####### USER-DEFINED MONITORED PARAMETERS #######
 
 ### Option: UnsafeUserParameters
@@ -226,6 +280,9 @@ Hostname=Zabbix server
 # Range: 0-1
 # Default:
 # UnsafeUserParameters=0
+<% if @unsafe_user_parameters != 'UNSET' -%>
+UnsafeUserParameters=<%= @unsafe_user_parameters %>
+<% end -%>
 
 ### Option: UserParameter
 #	User-defined parameter to monitor. There can be several user-defined parameters.

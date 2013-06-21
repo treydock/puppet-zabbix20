@@ -8,12 +8,14 @@ describe 'zabbix20' do
     }
   end
 
-  it { should include_class('zabbix20::params') }
+  it { should contain_class('zabbix20::params') }
+  it { should include_class('epel') }
 
   it do
     should contain_package('zabbix20').with({
       'ensure'  => 'present',
       'name'    => 'zabbix20',
+      'require' => 'Yumrepo[epel]',
     })
   end
 
