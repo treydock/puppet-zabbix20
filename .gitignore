@@ -1,3 +1,6 @@
+# OS files
+*.DS_Store
+
 # IDE related
 .idea
 .project
@@ -12,8 +15,10 @@ spec/fixtures/modules/
 .rvmrc
 
 # Bundler
+.bundle/
 Gemfile.lock
 
 # Puppet module generated
 metadata.json
 pkg/
+
