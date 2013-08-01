@@ -71,7 +71,7 @@ class zabbix20::agent (
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      require => Package['zabbix20-agent'],
+      require => Package['zabbix-agent'],
     }
   }
 
@@ -81,7 +81,7 @@ class zabbix20::agent (
 
   create_resources( 'class', $config_class )
 
-  package { 'zabbix20-agent':
+  package { 'zabbix-agent':
     ensure  => 'present',
     name    => $package_name,
     require => $package_require,
@@ -93,7 +93,7 @@ class zabbix20::agent (
     name        => $service_name,
     hasstatus   => $service_has_status,
     hasrestart  => $service_has_restart,
-    require     => Package['zabbix20-agent'],
+    require     => Package['zabbix-agent'],
   }
 
   file { '/etc/zabbix_agentd.conf.d':
@@ -110,7 +110,7 @@ class zabbix20::agent (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => Package['zabbix20-agent'],
+    require => Package['zabbix-agent'],
     notify  => Service['zabbix-agent'],
   }
 

@@ -12,7 +12,7 @@ describe 'zabbix20' do
   it { should include_class('epel') }
 
   it do
-    should contain_package('zabbix20').with({
+    should contain_package('zabbix').with({
       'ensure'  => 'present',
       'name'    => 'zabbix20',
       'require' => 'Yumrepo[epel]',
@@ -26,7 +26,7 @@ describe 'zabbix20' do
       'owner'     => 'root',
       'group'     => 'root',
       'mode'      => '0755',
-      'require'   => 'Package[zabbix20]',
+      'require'   => 'Package[zabbix]',
     })
   end
 end

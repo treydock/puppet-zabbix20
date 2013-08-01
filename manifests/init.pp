@@ -52,11 +52,11 @@ class zabbix20 (
   validate_bool($manage_group_real)
 
   $file_require = $manage_group_real ? {
-    true  => [ Package['zabbix20-agent'], Group['zabbix'] ],
-    false => Package['zabbix20-agent'],
+    true  => [ Package['zabbix-agent'], Group['zabbix'] ],
+    false => Package['zabbix-agent'],
   }
 
-  package { 'zabbix20':
+  package { 'zabbix':
     ensure  => 'present',
     name    => $package_name,
     require => $package_require,
@@ -68,7 +68,7 @@ class zabbix20 (
     owner     => 'root',
     group     => 'root',
     mode      => '0755',
-    require   => Package['zabbix20'],
+    require   => Package['zabbix'],
   }
 
   @file { '/var/run/zabbix':

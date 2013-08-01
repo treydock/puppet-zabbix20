@@ -11,7 +11,7 @@ shared_context 'zabbix20::agent::config' do
         'owner'   => 'root',
         'group'   => 'root',
         'mode'    => '0644',
-        'require' => 'Package[zabbix20-agent]',
+        'require' => 'Package[zabbix-agent]',
         'notify'  => 'Service[zabbix-agent]',
       })
     end

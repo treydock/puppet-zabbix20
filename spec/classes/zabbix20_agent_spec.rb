@@ -45,14 +45,14 @@ describe 'zabbix20::agent' do
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0644',
-      'require' => 'Package[zabbix20-agent]',
+      'require' => 'Package[zabbix-agent]',
     }) \
-      .with_content(/^\/var\/log\/zabbix\/zabbix_agentd.log\s+{$/) \
+      .with_content(/^\/var\/log\/zabbix\/zabbix_agentd.log\s+\{$/) \
       .with_content(/^\s+create 0664 zabbix zabbix$/)
   end
 
   it do
-    should contain_package('zabbix20-agent').with({
+    should contain_package('zabbix-agent').with({
       'ensure'  => 'present',
       'name'    => 'zabbix20-agent',
       'require' => 'Yumrepo[epel]',
@@ -66,7 +66,7 @@ describe 'zabbix20::agent' do
       'name'        => 'zabbix-agent',
       'hasstatus'   => 'true',
       'hasrestart'  => 'true',
-      'require'     => 'Package[zabbix20-agent]',
+      'require'     => 'Package[zabbix-agent]',
     })
   end
   
@@ -87,7 +87,7 @@ describe 'zabbix20::agent' do
       'owner'     => 'root',
       'group'     => 'zabbix',
       'mode'      => '0775',
-      'require'   => ['Package[zabbix20-agent]', 'Group[zabbix]'],
+      'require'   => ['Package[zabbix-agent]', 'Group[zabbix]'],
     })
   end
 
@@ -98,7 +98,7 @@ describe 'zabbix20::agent' do
       'owner'     => 'root',
       'group'     => 'zabbix',
       'mode'      => '0775',
-      'require'   => ['Package[zabbix20-agent]', 'Group[zabbix]'],
+      'require'   => ['Package[zabbix-agent]', 'Group[zabbix]'],
     })
   end
 
