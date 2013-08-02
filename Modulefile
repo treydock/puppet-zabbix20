@@ -6,7 +6,6 @@ license 'Apache License, Version 2.0'
 summary 'Zabbix 2.0.x Puppet module'
 description 'Zabbix 2.0.x Puppet module'
 project_page 'http://github.com/treydock/puppet-zabbix20'
-
-## Add dependencies, if any:
 dependency 'puppetlabs/stdlib', '>=3.2.0 <5.0.0'
-dependency 'puppetlabs/firewall', '~>0.3.1'
+dependency 'puppetlabs/firewall', '>=0.3.1'
+dependency 'stahnma/epel', '>=0.0.5'

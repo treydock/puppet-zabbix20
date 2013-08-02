@@ -3,16 +3,13 @@ require 'rspec-system-puppet/helpers'
 
 include RSpecSystemPuppet::Helpers
 
-# Project root for the this module's code
-def proj_root
-  File.expand_path(File.join(File.dirname(__FILE__), '..'))
-end
-
-def fixtures_root
-  File.expand_path(File.join(proj_root, 'spec', 'fixtures'))
-end
-
 RSpec.configure do |c|
+  # Project root for the this module's code
+  proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+
+  # Fixture root for this module's code
+  fixtures_root = File.expand_path(File.join(proj_root, 'spec', 'fixtures'))
+
   # Enable colour in Jenkins
   c.tty = true
 

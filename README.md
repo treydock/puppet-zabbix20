@@ -1,33 +1,48 @@
-# puppet-zabbix20
+# puppet-zabbix20 [![Build Status](https://travis-ci.org/treydock/puppet-zabbix20.png)](https://travis-ci.org/treydock/puppet-zabbix20)
 
 Puppet module to manage Zabbix 2.0.x installations
+
+This module currently only manages Zabbix Agents.
 
 ## Support
 
 Tested using
-* CentOS 5.9
+
 * CentOS 6.4
+* Scientific Linux 6.4
+* CentOS 5.9 (Vagrant tested only)
 
 ## Usage
+
+Install and configure a Zabbix Agent
+
+    class { 'zabbix::agent': }
 
 ## Development
 
 ### Dependencies
 
-* Ruby 1.8.7
-* Bundler
-* Vagrant >= 1.2.0
+* rake
+* bundler
 
 ### Unit testing
 
-1. To install dependencies run `bundle install`
-2. Run tests using `bundle exec rake spec:all`
+Install gem dependencies
+
+    bundle install
+
+Run unit tests
+
+    bundle exec rake ci
+
 
 ### Vagrant system tests
 
-1. Have Vagrant >= 1.2.0 installed
-2. Run tests using `bundle exec rake spec:system`
+If you have Vagrant >= 1.1.0 installed you can run system tests
 
-## Further Information
+    bundle exec rake spec:system
 
-*
+## TODO
+
+* Manage Zabbix Server
+* Manage Zabbix Proxy
