@@ -18,6 +18,16 @@ Install and configure a Zabbix Agent
 
     class { 'zabbix::agent': }
 
+Monitor MySQL with a Zabbix Agent.  The 'mysql::server' and 'mysql::server::monitor' classes must already be defined.
+
+    class { 'mysql::server': }
+    class { 'mysql::server::monitor':
+      mysql_monitor_hostname  => 'localhost',
+      mysql_monitor_password  => 'secret',
+      mysql_monitor_username  => 'zabbix-agent',
+    }
+    class { 'zabbix::agent::mysql': }
+
 ## Development
 
 ### Dependencies

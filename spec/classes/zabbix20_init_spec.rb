@@ -1,12 +1,9 @@
 require 'spec_helper'
 
 describe 'zabbix20' do
+  include_context :defaults
 
-  let :facts do
-    {
-      :osfamily   => 'RedHat'
-    }
-  end
+  let(:facts){ default_facts }
 
   it { should contain_class('zabbix20::params') }
   it { should include_class('epel') }

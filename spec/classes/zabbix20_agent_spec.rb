@@ -1,12 +1,9 @@
 require 'spec_helper'
 
 describe 'zabbix20::agent' do
+  include_context :defaults
 
-  let :facts do
-    {
-      :osfamily   => 'RedHat'
-    }
-  end
+  let(:facts){ default_facts }
 
   let(:node) { 'foo.example.com' }
 
@@ -123,5 +120,5 @@ describe 'zabbix20::agent' do
     })
   end
 
-  include_context 'zabbix20::agent::config'
+  it_behaves_like 'zabbix20::agent::config'
 end
