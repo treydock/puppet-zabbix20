@@ -14,12 +14,13 @@ shared_examples_for 'zabbix20::agent::config' do
   end
 
   it do
-    should contain_file('/etc/zabbix_agentd.conf') \
-      .with_content(/^PidFile=\/var\/run\/zabbix\/zabbix_agentd.pid$/) \
-      .with_content(/^LogFile=\/var\/log\/zabbix\/zabbix_agentd.log$/) \
-      .with_content(/^ListenPort=10050$/) \
-      .with_content(/^ListenIP=0.0.0.0$/) \
-      .with_content(/^Hostname=#{node}$/) \
-      .with_content(/^Include=\/etc\/zabbix_agentd.conf.d$/)
+    verify_contents(subject, '/etc/zabbix_agentd.conf', [
+      'PidFile=/var/run/zabbix/zabbix_agentd.pid',
+      'LogFile=/var/log/zabbix/zabbix_agentd.log',
+      'ListenPort=10050',
+      'ListenIP=0.0.0.0',
+      "Hostname=#{node}",
+      'Include=/etc/zabbix_agentd.conf.d',
+    ])
   end
 end

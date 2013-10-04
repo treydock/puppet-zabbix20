@@ -12,3 +12,9 @@ UserParameter=mysql.questions,HOME=<%= @user_home %> mysqladmin status | cut -f4
 UserParameter=mysql.slowqueries,HOME=<%= @user_home %> mysqladmin status | cut -f5 -d":" | cut -f1 -d"O"
 UserParameter=mysql.qps,HOME=<%= @user_home %> mysqladmin status | cut -f9 -d":"
 UserParameter=mysql.version,mysql -V
+
+# Slave Replication parameters.
+UserParameter=mysql.slave.running,HOME=<%= @user_home %> mysql -s -r -N -e "SHOW GLOBAL STATUS like 'slave_running'" | cut -f2
+UserParameter=mysql.slave.iorunning,HOME=<%= @user_home %> mysql -e "SHOW SLAVE STATUS\G" | sed -r -e 's/^\s+Slave_IO_Running: (.*)$/\1/g;tx;d;:x'
+UserParameter=mysql.slave.sqlrunning,HOME=<%= @user_home %> mysql -e "SHOW SLAVE STATUS\G" | sed -r -e 's/^\s+Slave_SQL_Running: (.*)$/\1/g;tx;d;:x'
+UserParameter=mysql.slave.secondsbehindmaster,HOME=<%= @user_home %> mysql -e "SHOW SLAVE STATUS\G" | sed -r -e 's/^\s+Seconds_Behind_Master: (.*)$/\1/g;tx;d;:x'

@@ -1,0 +1,21 @@
+# UserParameter checks for mdraid
+
+# vfs.md.degraded
+#
+# Arguments:
+#   1 - MD device name.  Example: md0
+#
+# Returns:
+#   A value of 0 if healthy and 1 for degraded.
+#
+UserParameter=vfs.md.degraded[*],cat /sys/block/$1/md/degraded
+
+# vfs.md.discovery
+#
+# Arguments:
+#   None
+#
+# Returns:
+#   Returns JSON used by Zabbix to do discovery of MD RAID devices
+#
+UserParameter=vfs.md.discovery,<%= @script_dir %>/vfs_md_discovery.rb

@@ -29,8 +29,23 @@ describe 'zabbix20::agent::mysql' do
       'mode'    => '0644',
       'require' => 'File[/etc/zabbix_agentd.conf.d]',
       'notify'  => 'Service[zabbix-agent]',
-    }) \
-      .with_content(/^UserParameter=mysql.ping,HOME=\/var\/lib\/zabbix mysqladmin ping | grep alive | wc -l$/)
+    })
+  end
+
+  it "/etc/zabbix_agentd.conf.d/userparameter_mysql.conf should have valid content" do
+    verify_contents(subject, '/etc/zabbix_agentd.conf.d/userparameter_mysql.conf', [
+      'UserParameter=mysql.ping,HOME=/var/lib/zabbix mysqladmin ping | grep alive | wc -l',
+      'UserParameter=mysql.uptime,HOME=/var/lib/zabbix mysqladmin status | cut -f2 -d":" | cut -f1 -d"T"',
+      'UserParameter=mysql.threads,HOME=/var/lib/zabbix mysqladmin status | cut -f3 -d":" | cut -f1 -d"Q"',
+      'UserParameter=mysql.questions,HOME=/var/lib/zabbix mysqladmin status | cut -f4 -d":" | cut -f1 -d"S"',
+      'UserParameter=mysql.slowqueries,HOME=/var/lib/zabbix mysqladmin status | cut -f5 -d":" | cut -f1 -d"O"',
+      'UserParameter=mysql.qps,HOME=/var/lib/zabbix mysqladmin status | cut -f9 -d":"',
+      'UserParameter=mysql.version,mysql -V',
+      'UserParameter=mysql.slave.running,HOME=/var/lib/zabbix mysql -s -r -N -e "SHOW GLOBAL STATUS like \'slave_running\'" | cut -f2',
+      'UserParameter=mysql.slave.iorunning,HOME=/var/lib/zabbix mysql -e "SHOW SLAVE STATUS\G" | sed -r -e \'s/^\s+Slave_IO_Running: (.*)$/\1/g;tx;d;:x\'',
+      'UserParameter=mysql.slave.sqlrunning,HOME=/var/lib/zabbix mysql -e "SHOW SLAVE STATUS\G" | sed -r -e \'s/^\s+Slave_SQL_Running: (.*)$/\1/g;tx;d;:x\'',
+      'UserParameter=mysql.slave.secondsbehindmaster,HOME=/var/lib/zabbix mysql -e "SHOW SLAVE STATUS\G" | sed -r -e \'s/^\s+Seconds_Behind_Master: (.*)$/\1/g;tx;d;:x\'',
+    ])
   end
 
   it do
@@ -40,9 +55,14 @@ describe 'zabbix20::agent::mysql' do
       'group'     => 'zabbix',
       'mode'      => '0600',
       'require'   => 'User[zabbix]',
-    }) \
-      .with_content(/^host=localhost$/) \
-      .with_content(/^user=zabbix-agent$/) \
-      .with_content(/^password=secret$/)
+    })
+  end
+
+  it "/var/lib/zabbix/.my.cnf should have valid content" do
+    verify_contents(subject, '/var/lib/zabbix/.my.cnf', [
+      'host=localhost',
+      'user=zabbix-agent',
+      'password=secret',
+    ])
   end
 end
