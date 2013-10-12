@@ -1,0 +1,56 @@
+# UserParameter checks for NFS Server
+
+# nfsd.proc.hung
+#
+# Arguments:
+#   None
+#
+# Returns:
+#   Number of NFS processes that are not in the R or S state.
+#   Type: Integer
+#
+UserParameter=nfsd.proc.hung,pgrep nfsd | xargs ps -o state= | egrep -v -c "R|S"
+
+# nfsd.threads.count
+#
+# Arguments:
+#   None
+#
+# Returns:
+#   Number of nfsd threads.
+#   Type: Integer
+#
+UserParameter=nfsd.threads.count,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f2
+
+# nfsd.threads.fullcnt
+#
+# Arguments:
+#   None
+#
+# Returns:
+#   Number of times all nfsd threads were busy since last boot.
+#   Type: Integer
+#
+UserParameter=nfsd.threads.fullcnt,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f3
+
+# nfsd.threads.<N>pct_used
+#
+#   Where <N> is 10-100 in increments of 10.
+#
+# Arguments:
+#   None
+#
+# Returns:
+#   Seconds in which more than <N> percent of threads were in use since last boot.
+#   Type: Float
+#
+UserParameter=nfsd.threads.10pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f4
+UserParameter=nfsd.threads.20pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f5
+UserParameter=nfsd.threads.30pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f6
+UserParameter=nfsd.threads.40pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f7
+UserParameter=nfsd.threads.50pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f8
+UserParameter=nfsd.threads.60pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f9
+UserParameter=nfsd.threads.70pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f10
+UserParameter=nfsd.threads.80pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f11
+UserParameter=nfsd.threads.90pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f12
+UserParameter=nfsd.threads.100pct_used,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f13
