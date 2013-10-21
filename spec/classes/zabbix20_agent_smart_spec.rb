@@ -12,14 +12,14 @@ describe 'zabbix20::agent::smart' do
   it do
     should contain_sudo__conf('zabbix_smartctl').with({
       'priority'  => '99',
-      'content'   => 'zabbix ALL=(ALL) NOPASSWD: /usr/sbin/smartctl -H /dev/sd? , /usr/sbin/smartctl -H /dev/disk/*',
+      'content'   => 'zabbix ALL=(ALL) NOPASSWD: /usr/sbin/smartctl -H /dev/*',
       'before'    => 'File[userparameter_smart.conf]',
     })
   end
 
   it "should create sudoers file" do
     verify_contents(subject, '99_zabbix_smartctl', [
-      'zabbix ALL=(ALL) NOPASSWD: /usr/sbin/smartctl -H /dev/sd? , /usr/sbin/smartctl -H /dev/disk/*',
+      'zabbix ALL=(ALL) NOPASSWD: /usr/sbin/smartctl -H /dev/*',
     ])
   end
 

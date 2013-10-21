@@ -28,7 +28,7 @@ class zabbix20::agent::smart (
   if $manage_sudo {
     sudo::conf { 'zabbix_smartctl':
       priority  => $sudo_priority,
-      content   => 'zabbix ALL=(ALL) NOPASSWD: /usr/sbin/smartctl -H /dev/sd? , /usr/sbin/smartctl -H /dev/disk/*',
+      content   => 'zabbix ALL=(ALL) NOPASSWD: /usr/sbin/smartctl -H /dev/*',
       before    => File['userparameter_smart.conf'],
     }
   }
