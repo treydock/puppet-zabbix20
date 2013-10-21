@@ -1,0 +1,12 @@
+# UserParameter checks for smartctl
+
+# smartctl.health - The smart health status of block device
+#
+# Arguments:
+#   1 - Device path, example: /dev/sda
+#
+# Returns:
+#   1 - GOOD
+#   0 - BAD
+#
+UserParameter=smartctl.health[*],sudo /usr/sbin/smartctl -H $1 | sed -n -r -e 's/^(SMART overall-health self-assessment test result|SMART Health Status): (.*)$/\2/p' | grep -c 'OK\|PASSED'
