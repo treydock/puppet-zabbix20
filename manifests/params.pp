@@ -70,4 +70,11 @@ class zabbix20::params {
     'unsafe_user_parameters'  => 'UNSET',
   }
 
+  $zfs_sudo_commands  = [
+    '/sbin/zpool status *',
+    '/sbin/zpool list *',
+    '/sbin/zfs list *',
+    '/sbin/zfs get *'
+  ]
+
 }
