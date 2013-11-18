@@ -1,0 +1,29 @@
+# UserParameter checks for Linux processes
+
+# proc.mem.ext
+#
+# Arguments:
+#
+#   1 - name
+#   2 - user
+#   3 - mode
+#   4 - cmdline
+#
+# Returns:
+#   Memory RSS of process in Kilobytes
+
+UserParameter=proc.mem.ext[*],echo "$(pgrep $([ -z "$2" ] && echo "" || echo "-u $2") $([ -z "$4" ] && echo "" || echo "-f $4") $([ -z "$1" ] && echo "" || echo $1) | xargs ps -orss= | paste -sd+ | bc) * 1024"|bc
+
+# proc.cpu.time
+#
+# Arguments:
+#
+#   1 - name
+#   2 - user
+#   3 - mode
+#   4 - cmdline
+#
+# Returns:
+#   CPU time of process in seconds
+
+UserParameter=proc.cpu.time[*],pgrep $([ -z "$2" ] && echo "" || echo "-u $2") $([ -z "$4" ] && echo "" || echo "-f $4") $([ -z "$1" ] && echo "" || echo $1) | xargs ps -ocputime= | awk '{ split($$1,t,"[:-]"); $$2=t[4]*3600*24+t[3]*3600+t[2]*60+t[1]; print $$2;}' | paste -sd+ | bc
