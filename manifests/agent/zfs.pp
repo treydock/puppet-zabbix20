@@ -23,7 +23,7 @@ class zabbix20::agent::zfs (
   $zfs_trapper_minute = '*/5',
   $zfs_trapper_hour = 'absent',
   $zpool_trapper_minute = '*/5',
-  $zpool_trapper_hour = 'absent',
+  $zpool_trapper_hour = 'absent'
 ) inherits zabbix20::params {
 
   validate_bool($manage_sudo)
