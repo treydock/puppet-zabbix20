@@ -9,7 +9,7 @@
 # ONLINE - The zpool is healthy
 # * - The zpool has issues
 #
-UserParameter=zpool.health[*],sudo /sbin/zpool list -H -o health $1
+UserParameter=zpool.health[*],<%= @scripts_dir %>/zabbix_zfs_helper.rb zpool.health[$1]
 
 # zfs.arcstat
 #

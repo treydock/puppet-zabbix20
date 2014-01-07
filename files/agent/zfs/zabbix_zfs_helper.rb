@@ -16,7 +16,7 @@ module Logging
 end
 
 module ZFS
-  class Filesystem
+  class Base
     include Logging
 
     attr_accessor :name, :raw_properties, :sudo, :debug
@@ -26,23 +26,12 @@ module ZFS
       @debug = opts['debug'] if opts['debug']
     end
 
-    def total
-      available + used unless used.nil? or available.nil?
-    end
-
-    def pavailable
-      100 * (available.to_f / total.to_f) unless available.nil? or total.nil?
-    end
-
-    alias_method :pfree, :pavailable
-
     def name=(val)
       @name = val
       get_raw_properties if @raw_properties.nil?
     end
 
     def method_missing(m, *args, &block)
-      m = "available" if m.to_s.eql?("free")
       if v = get_property_value(m.to_s)
         v
       else
@@ -51,12 +40,6 @@ module ZFS
     end
 
     private
-
-    def get_raw_properties
-      cmd = "#{@sudo} zfs get -H -p all #{name}"
-      logger.debug("Executing: #{cmd}") if @debug
-      @raw_properties = `#{cmd}`
-    end
 
     def get_property_value(p)
       if @raw_properties[/^#{@name}\s+#{p}\s+([^\s]+)\s+/]
@@ -70,6 +53,42 @@ module ZFS
       else
         value.to_i
       end
+    end
+  end
+
+  class Zpool < Base
+
+    private
+
+    def get_raw_properties
+      cmd = "#{@sudo} zpool get all #{@name}"
+      logger.debug("Executing: #{cmd}") if @debug
+      @raw_properties = `#{cmd}`
+    end
+  end
+
+  class Filesystem < Base
+    def total
+      available + used unless used.nil? or available.nil?
+    end
+
+    def pavailable
+      100 * (available.to_f / total.to_f) unless available.nil? or total.nil?
+    end
+
+    alias_method :pfree, :pavailable
+
+    def method_missing(m, *args, &block)
+      m = "available" if m.to_s.eql?("free")
+      super
+    end
+
+    private
+
+    def get_raw_properties
+      cmd = "#{@sudo} zfs get -H -p all #{@name}"
+      logger.debug("Executing: #{cmd}") if @debug
+      @raw_properties = `#{cmd}`
     end
   end
 end
@@ -137,12 +156,19 @@ def run!
     exit 1
   end
 
-  @zfs = ZFS::Filesystem.new(@options)
-
   case key
   when /zfs.fs.size|zfs.property.get/
+    @zfs = ZFS::Filesystem.new(@options)
     @zfs.name = args[0]
     puts @zfs.send(args[1])
+  when /zpool.property.get/
+    @zpool = ZFS::Zpool.new(@options)
+    @zpool.name = args[0]
+    puts @zpool.send(args[1])
+  when /zpool.health/
+    @zpool = ZFS::Zpool.new(@options)
+    @zpool.name = args[0]
+    puts @zpool.send('health')
   end
 
   exit 0

@@ -36,7 +36,7 @@ describe 'zabbix20::agent::zfs' do
   it "should create userparameter_zfs.conf" do
     content = subject.resource('file', 'userparameter_zfs.conf').send(:parameters)[:content]
     content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
-      'UserParameter=zpool.health[*],sudo /sbin/zpool list -H -o health $1',
+      'UserParameter=zpool.health[*],/usr/local/sbin/zabbix_zfs_helper.rb zpool.health[$1]',
       'UserParameter=zfs.arcstat[*],grep "^$1 " /proc/spl/kstat/zfs/arcstats | awk -F" " \'{ print $$3 }\'',
       'UserParameter=zfs.arcstat.get[*],/usr/local/sbin/arcstat_get.py $1',
       'UserParameter=zfs.property.get[*],/usr/local/sbin/zabbix_zfs_helper.rb zfs.property.get[$1,$2]',

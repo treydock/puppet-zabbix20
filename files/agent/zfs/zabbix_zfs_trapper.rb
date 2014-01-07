@@ -57,12 +57,15 @@ logger.formatter = proc do |severtiy, datetime, progname, msg|
 end
 
 ZABBIX_SEND_DATAFILE = "/tmp/#{File.basename(__FILE__, '.*')}.txt"
+ZFS_KEY_NAME = 'zfs.trapper.get'
 ZFS_GET = [
   'available',
   'used',
   'total',
   'pavailable',
 ]
+
+ZPOOL_KEY_NAME = 'zpool.trapper.get'
 ZPOOL_GET = [
   'health'
 ]
@@ -77,11 +80,11 @@ ZPOOL_GET = [
 
 results = []
 ZFS_GET.each do |key|
-  results << "#{@options['hostname']} zfs.get[#{key},#{@zfs.name}] #{@time} #{@zfs.send(key)}\n"
+  results << "#{@options['hostname']} #{ZFS_KEY_NAME}[#{key},#{@zfs.name}] #{@time} #{@zfs.send(key)}\n"
 end
 
 ZPOOL_GET.each do |key|
-  results << "#{@options['hostname']} zpool.get[#{key},#{@zpool.name}] #{@time} #{@zpool.send(key)}\n"
+  results << "#{@options['hostname']} #{ZPOOL_KEY_NAME}[#{key},#{@zpool.name}] #{@time} #{@zpool.send(key)}\n"
 end
 
 File.open(ZABBIX_SEND_DATAFILE, "w") { |f| f.write(results) }
