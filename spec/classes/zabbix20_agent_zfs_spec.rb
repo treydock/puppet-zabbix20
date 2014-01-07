@@ -83,7 +83,7 @@ describe 'zabbix20::agent::zfs' do
   it do
     should contain_cron('zabbix_zfs_trapper.rb').with({
       'ensure'    => 'present',
-      'command'   => "/usr/local/sbin/zabbix_zfs_trapper.rb",
+      'command'   => "/usr/local/sbin/zabbix_zfs_trapper.rb &> /var/log/zabbix/zabbix_zfs_trapper.log",
       'user'      => 'root',
       'hour'      => 'absent',
       'minute'    => '*/5',

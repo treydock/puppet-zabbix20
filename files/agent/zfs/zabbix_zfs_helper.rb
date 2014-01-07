@@ -61,7 +61,11 @@ module ZFS
     private
 
     def get_raw_properties
-      cmd = "#{@sudo} zpool get all #{@name}"
+      c = []
+      c << "sudo" if @sudo
+      c << "zpool get all"
+      c << @name
+      cmd = c.join(" ")
       logger.debug("Executing: #{cmd}") if @debug
       @raw_properties = `#{cmd}`
     end
@@ -86,7 +90,11 @@ module ZFS
     private
 
     def get_raw_properties
-      cmd = "#{@sudo} zfs get -H -p all #{@name}"
+      c = []
+      c << "sudo" if @sudo
+      c << "zfs get -H -p all"
+      c << @name
+      cmd = c.join(" ")
       logger.debug("Executing: #{cmd}") if @debug
       @raw_properties = `#{cmd}`
     end

@@ -93,7 +93,7 @@ class zabbix20::agent::zfs (
   if $manage_cron {
     cron { 'zabbix_zfs_trapper.rb':
       ensure    => present,
-      command   => "${scripts_dir}/zabbix_zfs_trapper.rb",
+      command   => "${scripts_dir}/zabbix_zfs_trapper.rb &> /var/log/zabbix/zabbix_zfs_trapper.log",
       user      => 'root',
       hour      => $trapper_hour,
       minute    => $trapper_minute,
