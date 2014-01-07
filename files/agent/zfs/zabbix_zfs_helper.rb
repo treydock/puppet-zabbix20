@@ -5,46 +5,6 @@ require 'optparse'
 require 'logger'
 require 'pp'
 
-def parse(args)
-  mandatory_options = ['key']
-  @options = {}
-  @options['key'] = nil
-  @options['sudo'] = true
-  @options['debug'] = false
-
-  optparse = OptionParser.new do |opts|
-    opts.banner = "Usage: #{__FILE__} [options] key"
-
-    opts.on('--[no-]sudo', 'Execute commands using sudo') do |s|
-      @options['sudo'] = s
-    end
-
-    opts.on('--[no-]debug', 'Show debug output') do |d|
-      @options['debug'] = d
-    end
-
-    opts.on('-h', '--help', 'Display this screen') do
-      puts opts
-      exit
-    end
-  end
-
-  begin
-    optparse.parse!(args)
-    @options['key'] = args.first
-    mandatory_options.each do |mandatory_option|
-      raise OptionParser::MissingArgument, "Missing argument: #{mandatory_option}" if @options[mandatory_option].nil?
-    end
-  rescue OptionParser::InvalidOption, OptionParser::MissingArgument
-    puts $!.to_s
-    puts optparse
-    exit
-  end
-
-  @options
-
-end
-
 module Logging
   def logger
     Logging.logger
@@ -114,33 +74,78 @@ module ZFS
   end
 end
 
-include Logging
+def parse(args)
+  mandatory_options = ['key']
+  @options = {}
+  @options['key'] = nil
+  @options['sudo'] = true
+  @options['debug'] = false
 
-logger.level = Logger::DEBUG
-logger.progname = File.basename(__FILE__, ".*")
-logger.formatter = proc do |severtiy, datetime, progname, msg|
-  "#{severtiy} -- #{progname}: #{msg}\n"
+  optparse = OptionParser.new do |opts|
+    opts.banner = "Usage: #{__FILE__} [options] key"
+
+    opts.on('--[no-]sudo', 'Execute commands using sudo') do |s|
+      @options['sudo'] = s
+    end
+
+    opts.on('--[no-]debug', 'Show debug output') do |d|
+      @options['debug'] = d
+    end
+
+    opts.on('-h', '--help', 'Display this screen') do
+      puts opts
+      exit
+    end
+  end
+  
+  begin
+    optparse.parse!(args)
+    @options['key'] = args.first
+    mandatory_options.each do |mandatory_option|
+      raise OptionParser::MissingArgument, "Missing argument: #{mandatory_option}" if @options[mandatory_option].nil?
+    end
+  rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+    puts $!.to_s
+    puts optparse
+    exit
+  end
+
+  @options
+
 end
 
-@options = parse(ARGV)
+def run!
 
-logger.debug("Key: #{@options['key']}") if @options['debug']
+  include Logging
 
-if @options['key'] =~ /^(.*)\[(.*)\]$/
-  logger.debug("Key match found: #{@options['key']}") if @options['debug']
-  key = $1
-  logger.debug("Item key: #{key}") if @options['debug']
-  args = $2.split(',')
-else
-  exit 1
+  logger.level = Logger::DEBUG
+  logger.progname = File.basename(__FILE__, ".*")
+  logger.formatter = proc do |severtiy, datetime, progname, msg|
+    "#{severtiy} -- #{progname}: #{msg}\n"
+  end
+
+  @options = parse(ARGV)
+
+  logger.debug("Key: #{@options['key']}") if @options['debug']
+
+  if @options['key'] =~ /^(.*)\[(.*)\]$/
+    logger.debug("Key match found: #{@options['key']}") if @options['debug']
+    key = $1
+    logger.debug("Item key: #{key}") if @options['debug']
+    args = $2.split(',')
+  else
+    exit 1
+  end
+
+  @zfs = ZFS::Filesystem.new(@options)
+
+  case key
+  when /zfs.fs.size|zfs.property.get/
+    @zfs.name = args[0]
+    puts @zfs.send(args[1])
+  end
+
+  exit 0
 end
 
-@zfs = ZFS::Filesystem.new(@options)
-
-case key
-when /zfs.fs.size|zfs.property.get/
-  @zfs.name = args[0]
-  puts @zfs.send(args[1])
-end
-
-exit 0
+run! if __FILE__==$0

@@ -69,46 +69,21 @@ describe 'zabbix20::agent::zfs' do
   end
 
   it do
-    should contain_file('zfs_trapper.rb').with({
+    should contain_file('zabbix_zfs_trapper.rb').with({
       'ensure'  => 'present',
-      'path'    => '/usr/local/sbin/zfs_trapper.rb',
-      'source'  => 'puppet:///modules/zabbix20/agent/zfs/zfs_trapper.rb',
+      'path'    => '/usr/local/sbin/zabbix_zfs_trapper.rb',
+      'source'  => 'puppet:///modules/zabbix20/agent/zfs/zabbix_zfs_trapper.rb',
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0755',
-      'before'  => 'Cron[zfs_trapper.rb]',
+      'before'  => 'Cron[zabbix_zfs_trapper.rb]',
     })
   end
 
   it do
-    should contain_cron('zfs_trapper.rb').with({
+    should contain_cron('zabbix_zfs_trapper.rb').with({
       'ensure'    => 'present',
-      'command'   => "/usr/local/sbin/zfs_trapper.rb",
-      'user'      => 'root',
-      'hour'      => 'absent',
-      'minute'    => '*/5',
-      'month'     => 'absent',
-      'monthday'  => 'absent',
-      'weekday'   => 'absent',
-    })
-  end
-
-  it do
-    should contain_file('zpool_trapper.rb').with({
-      'ensure'  => 'present',
-      'path'    => '/usr/local/sbin/zpool_trapper.rb',
-      'source'  => 'puppet:///modules/zabbix20/agent/zfs/zpool_trapper.rb',
-      'owner'   => 'root',
-      'group'   => 'root',
-      'mode'    => '0755',
-      'before'  => 'Cron[zpool_trapper.rb]',
-    })
-  end
-
-  it do
-    should contain_cron('zpool_trapper.rb').with({
-      'ensure'    => 'present',
-      'command'   => "/usr/local/sbin/zpool_trapper.rb",
+      'command'   => "/usr/local/sbin/zabbix_zfs_trapper.rb",
       'user'      => 'root',
       'hour'      => 'absent',
       'minute'    => '*/5',
@@ -150,22 +125,16 @@ describe 'zabbix20::agent::zfs' do
     it { should_not contain_cron('zpool_trapper.rb') }
   end
 
-  context "zfs_trapper_minute => '*/10'" do
-    let(:params) {{ :zfs_trapper_minute => '*/10' }}
-    it { should contain_cron('zfs_trapper.rb').with_minute('*/10') }
-  end
-
-  context "zpool_trapper_minute => '*/10'" do
-    let(:params) {{ :zpool_trapper_minute => '*/10' }}
-    it { should contain_cron('zpool_trapper.rb').with_minute('*/10') }
+  context "trapper_minute => '*/10'" do
+    let(:params) {{ :trapper_minute => '*/10' }}
+    it { should contain_cron('zabbix_zfs_trapper.rb').with_minute('*/10') }
   end
 
   context "scripts_dir => '/opt/sbin'" do
     let(:params){{ :scripts_dir => '/opt/sbin' }}
     it { should contain_file('arcstat_get.py').with_path('/opt/sbin/arcstat_get.py') }
     it { should contain_file('zabbix_zfs_helper.rb').with_path('/opt/sbin/zabbix_zfs_helper.rb') }
-    it { should contain_file('zfs_trapper.rb').with_path('/opt/sbin/zfs_trapper.rb') }
-    it { should contain_file('zpool_trapper.rb').with_path('/opt/sbin/zpool_trapper.rb') }
+    it { should contain_file('zabbix_zfs_trapper.rb').with_path('/opt/sbin/zabbix_zfs_trapper.rb') }
   end
 
 

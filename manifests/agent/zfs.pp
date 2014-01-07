@@ -20,10 +20,8 @@ class zabbix20::agent::zfs (
   $manage_cron = true,
   $sudo_commands = $zabbix20::params::zfs_sudo_commands,
   $sudo_priority = 10,
-  $zfs_trapper_minute = '*/5',
-  $zfs_trapper_hour = 'absent',
-  $zpool_trapper_minute = '*/5',
-  $zpool_trapper_hour = 'absent'
+  $trapper_minute = '*/5',
+  $trapper_hour = 'absent'
 ) inherits zabbix20::params {
 
   validate_bool($manage_sudo)
@@ -82,44 +80,23 @@ class zabbix20::agent::zfs (
     before  => File['userparameter_zfs.conf'],
   }
 
-  file { 'zfs_trapper.rb':
+  file { 'zabbix_zfs_trapper.rb':
     ensure  => present,
-    path    => "${scripts_dir}/zfs_trapper.rb",
-    source  => 'puppet:///modules/zabbix20/agent/zfs/zfs_trapper.rb',
+    path    => "${scripts_dir}/zabbix_zfs_trapper.rb",
+    source  => 'puppet:///modules/zabbix20/agent/zfs/zabbix_zfs_trapper.rb',
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
-    before  => Cron['zfs_trapper.rb'],
-  }
-
-  file { 'zpool_trapper.rb':
-    ensure  => present,
-    path    => "${scripts_dir}/zpool_trapper.rb",
-    source  => 'puppet:///modules/zabbix20/agent/zfs/zpool_trapper.rb',
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
-    before  => Cron['zpool_trapper.rb'],
+    before  => Cron['zabbix_zfs_trapper.rb'],
   }
 
   if $manage_cron {
-    cron { 'zfs_trapper.rb':
+    cron { 'zabbix_zfs_trapper.rb':
       ensure    => present,
-      command   => "${scripts_dir}/zfs_trapper.rb",
+      command   => "${scripts_dir}/zabbix_zfs_trapper.rb",
       user      => 'root',
-      hour      => $zfs_trapper_hour,
-      minute    => $zfs_trapper_minute,
-      month     => absent,
-      monthday  => absent,
-      weekday   => absent,
-    }
-
-    cron { 'zpool_trapper.rb':
-      ensure    => present,
-      command   => "${scripts_dir}/zpool_trapper.rb",
-      user      => 'root',
-      hour      => $zpool_trapper_hour,
-      minute    => $zpool_trapper_minute,
+      hour      => $trapper_hour,
+      minute    => $trapper_minute,
       month     => absent,
       monthday  => absent,
       weekday   => absent,
