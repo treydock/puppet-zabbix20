@@ -22,7 +22,7 @@ module ZFS
     attr_accessor :name, :raw_properties, :sudo, :debug
 
     def initialize(opts = {})
-      @sudo = opts['sudo'] ? 'sudo' : ''
+      @sudo = opts['sudo'] || true
       @debug = opts['debug'] if opts['debug']
     end
 
