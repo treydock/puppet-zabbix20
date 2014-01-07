@@ -73,6 +73,7 @@ class zabbix20::params {
   $zfs_sudo_commands  = [
     '/sbin/zpool status *',
     '/sbin/zpool list *',
+    '/sbin/zpool get *',
     '/sbin/zfs list *',
     '/sbin/zfs get *'
   ]

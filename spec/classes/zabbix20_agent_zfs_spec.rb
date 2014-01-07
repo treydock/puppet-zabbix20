@@ -15,7 +15,7 @@ describe 'zabbix20::agent::zfs' do
     content = subject.resource('file', '10_zabbix_zfs').send(:parameters)[:content]
     content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
       'Defaults:zabbix !requiretty',
-      'Cmnd_Alias ZFS_CMDS = /sbin/zpool status *,/sbin/zpool list *,/sbin/zfs list *,/sbin/zfs get *',
+      'Cmnd_Alias ZFS_CMDS = /sbin/zpool status *,/sbin/zpool list *,/sbin/zpool get *,/sbin/zfs list *,/sbin/zfs get *',
       'Runas_Alias ZFS_USER = root',
       'zabbix ALL=(ZFS_USER) NOPASSWD: ZFS_CMDS',
     ]
