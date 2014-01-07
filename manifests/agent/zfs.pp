@@ -72,6 +72,16 @@ class zabbix20::agent::zfs (
     before  => File['userparameter_zfs.conf'],
   }
 
+  file { 'zabbix_zfs_helper.rb':
+    ensure  => present,
+    path    => "${scripts_dir}/zabbix_zfs_helper.rb",
+    source  => 'puppet:///modules/zabbix20/agent/zfs/zabbix_zfs_helper.rb',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    before  => File['userparameter_zfs.conf'],
+  }
+
   file { 'zfs_trapper.rb':
     ensure  => present,
     path    => "${scripts_dir}/zfs_trapper.rb",

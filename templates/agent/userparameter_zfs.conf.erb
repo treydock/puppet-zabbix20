@@ -11,14 +11,6 @@
 #
 UserParameter=zpool.health[*],sudo /sbin/zpool list -H -o health $1
 
-# zfs.get
-#
-# Arguments:
-# 1 - property name
-# 2 - zfs filesystem name
-#
-UserParameter=zfs.get[*],echo `sudo /sbin/zfs get -H -p $1 $2` | tr -s ' ' | cut -d ' ' -f 3
-
 # zfs.arcstat
 #
 # Arguments:
@@ -38,3 +30,20 @@ UserParameter=zfs.arcstat[*],grep "^$1 " /proc/spl/kstat/zfs/arcstats | awk -F" 
 #   Specified stat value from /proc/spl/kstat/zfs/arcstats
 #
 UserParameter=zfs.arcstat.get[*],<%= @scripts_dir %>/arcstat_get.py $1
+
+# zfs.property.get
+#
+# Arguments:
+# 1 - zfs filesystem name
+# 2 - property name
+#
+UserParameter=zfs.property.get[*],<%= @scripts_dir %>/zabbix_zfs_helper.rb zfs.property.get[$1,$2]
+
+# zfs.fs.size
+#
+# Arguments:
+# 1 - zfs filesystem name
+# 2 - property name
+#     valid values: used, available (free), pavailable (pfree), total
+#
+UserParameter=zfs.fs.size[*],<%= @scripts_dir %>/zabbix_zfs_helper.rb zfs.fs.size[$1,$2]

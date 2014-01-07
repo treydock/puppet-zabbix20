@@ -37,9 +37,10 @@ describe 'zabbix20::agent::zfs' do
     content = subject.resource('file', 'userparameter_zfs.conf').send(:parameters)[:content]
     content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
       'UserParameter=zpool.health[*],sudo /sbin/zpool list -H -o health $1',
-      'UserParameter=zfs.get[*],echo `sudo /sbin/zfs get -H -p $1 $2` | tr -s \' \' | cut -d \' \' -f 3',
       'UserParameter=zfs.arcstat[*],grep "^$1 " /proc/spl/kstat/zfs/arcstats | awk -F" " \'{ print $$3 }\'',
       'UserParameter=zfs.arcstat.get[*],/usr/local/sbin/arcstat_get.py $1',
+      'UserParameter=zfs.property.get[*],/usr/local/sbin/zabbix_zfs_helper.rb zfs.property.get[$1,$2]',
+      'UserParameter=zfs.fs.size[*],/usr/local/sbin/zabbix_zfs_helper.rb zfs.fs.size[$1,$2]',
     ]
   end
 
@@ -48,6 +49,18 @@ describe 'zabbix20::agent::zfs' do
       'ensure'  => 'present',
       'path'    => '/usr/local/sbin/arcstat_get.py',
       'source'  => 'puppet:///modules/zabbix20/agent/zfs/arcstat_get.py',
+      'owner'   => 'root',
+      'group'   => 'root',
+      'mode'    => '0755',
+      'before'  => 'File[userparameter_zfs.conf]',
+    })
+  end
+
+  it do
+    should contain_file('zabbix_zfs_helper.rb').with({
+      'ensure'  => 'present',
+      'path'    => '/usr/local/sbin/zabbix_zfs_helper.rb',
+      'source'  => 'puppet:///modules/zabbix20/agent/zfs/zabbix_zfs_helper.rb',
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0755',
@@ -149,6 +162,8 @@ describe 'zabbix20::agent::zfs' do
 
   context "scripts_dir => '/opt/sbin'" do
     let(:params){{ :scripts_dir => '/opt/sbin' }}
+    it { should contain_file('arcstat_get.py').with_path('/opt/sbin/arcstat_get.py') }
+    it { should contain_file('zabbix_zfs_helper.rb').with_path('/opt/sbin/zabbix_zfs_helper.rb') }
     it { should contain_file('zfs_trapper.rb').with_path('/opt/sbin/zfs_trapper.rb') }
     it { should contain_file('zpool_trapper.rb').with_path('/opt/sbin/zpool_trapper.rb') }
   end
