@@ -37,7 +37,14 @@ describe 'zabbix20::agent::zfs class:' do
     it { should be_mode 755 }
   end
 
-  describe file('/usr/local/sbin/zfs_trapper.rb') do
+  describe file('/usr/local/sbin/zabbix_zfs_helper.rb') do
+    it { should be_file }
+    it { should be_owned_by 'root' }
+    it { should be_grouped_into 'root' }
+    it { should be_mode 755 }
+  end
+
+  describe file('/usr/local/sbin/zabbix_zfs_trapper.rb') do
     it { should be_file }
     it { should be_owned_by 'root' }
     it { should be_grouped_into 'root' }
@@ -45,17 +52,6 @@ describe 'zabbix20::agent::zfs class:' do
   end
 
   describe cron do
-    it { should have_entry('*/5 * * * * /usr/local/sbin/zfs_trapper.rb').with_user('root') }
-  end
-
-  describe file('/usr/local/sbin/zpool_trapper.rb') do
-    it { should be_file }
-    it { should be_owned_by 'root' }
-    it { should be_grouped_into 'root' }
-    it { should be_mode 755 }
-  end
-
-  describe cron do
-    it { should have_entry('*/5 * * * * /usr/local/sbin/zpool_trapper.rb').with_user('root') }
+    it { should have_entry('*/5 * * * * /usr/local/sbin/zabbix_zfs_trapper.rb').with_user('root') }
   end
 end
