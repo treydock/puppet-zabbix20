@@ -1,4 +1,5 @@
 Defaults:<%= @user_name %> !requiretty
+Defaults:<%= @user_name %> !syslog
 Cmnd_Alias ZFS_CMDS = <%= @sudo_commands_real %>
 Runas_Alias ZFS_USER = root
 <%= @user_name %> ALL=(ZFS_USER) NOPASSWD: ZFS_CMDS
