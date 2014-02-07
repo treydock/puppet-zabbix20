@@ -7,7 +7,7 @@
 
 # Testing and development
 .vagrant
-spec/fixtures/modules/
+spec/fixtures
 .rspec_system/
 
 # Ruby and RVM
