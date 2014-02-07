@@ -13,6 +13,7 @@ def parse(args)
   @options['name'] = "tank"
   @options['hostname'] = `hostname -f`.strip
   @options['server'] = IO.read('/etc/zabbix_agentd.conf').scan(/^Server=(.*)$/).flatten.first.split(',').first
+  @options['debug'] = false
 
   optparse = OptionParser.new do |opts|
     
@@ -26,6 +27,10 @@ def parse(args)
 
     opts.on('--server', 'Zabbix Server to send trapper data') do |server|
       @options['server'] = server
+    end
+
+    opts.on('--[no-]debug', 'Show debug output') do |d|
+      @options['debug'] = d
     end
 
     opts.on('-h', '--help', 'Display this screen') do
@@ -50,7 +55,7 @@ include Logging
 
 @options = parse(ARGV)
 
-logger.level = Logger::INFO
+logger.level = @options['debug'] ? Logger::DEBUG : Logger::INFO
 logger.datetime_format = "%Y-%m-%d %H:%M:%S"
 logger.formatter = proc do |severtiy, datetime, progname, msg|
   "#{datetime.strftime(logger.datetime_format)}: #{msg}\n"

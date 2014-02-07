@@ -16,13 +16,23 @@ module Logging
 end
 
 module ZFS
+  class Util
+    def self.is_root?
+      Process.uid == 0
+    end
+
+    def self.require_sudo?
+      ! is_root?
+    end
+  end
+
   class Base
     include Logging
 
     attr_accessor :name, :raw_properties, :sudo, :debug
 
     def initialize(opts = {})
-      @sudo = opts['sudo'] || true
+      @sudo = opts['sudo'] || ZFS::Util.require_sudo?
       @debug = opts['debug'] if opts['debug']
     end
 
@@ -66,7 +76,7 @@ module ZFS
       c << "zpool get all"
       c << @name
       cmd = c.join(" ")
-      logger.debug("Executing: #{cmd}") if @debug
+      logger.debug("Executing: #{cmd}")
       @raw_properties = `#{cmd}`
     end
   end
@@ -95,7 +105,7 @@ module ZFS
       c << "zfs get -H -p all"
       c << @name
       cmd = c.join(" ")
-      logger.debug("Executing: #{cmd}") if @debug
+      logger.debug("Executing: #{cmd}")
       @raw_properties = `#{cmd}`
     end
   end
@@ -105,7 +115,7 @@ def parse(args)
   mandatory_options = ['key']
   @options = {}
   @options['key'] = nil
-  @options['sudo'] = true
+  @options['sudo'] = ZFS::Util.require_sudo?
   @options['debug'] = false
 
   optparse = OptionParser.new do |opts|
@@ -145,7 +155,7 @@ def run!
 
   include Logging
 
-  logger.level = Logger::DEBUG
+  logger.level = @options['debug'] ? Logger::DEBUG : Logger::INFO
   logger.progname = File.basename(__FILE__, ".*")
   logger.formatter = proc do |severtiy, datetime, progname, msg|
     "#{severtiy} -- #{progname}: #{msg}\n"
