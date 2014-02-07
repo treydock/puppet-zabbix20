@@ -1,16 +1,16 @@
-source "https://rubygems.org"
+source "http://rubygems.org"
 
 group :development, :test do
-  gem 'rake'
-  gem 'puppetlabs_spec_helper', :require => false
-  gem 'puppet-lint'
-  gem 'puppet-syntax' unless ENV['PUPPET_GEM_VERSION'] =~ /2.6/
-  gem 'travis-lint'
-  gem 'rspec-system-puppet', '~> 2.0'
-  #gem 'rspec-system-serverspec', '~> 1.0'
-  # Needed to use latest serverspec gem
-  # PR submitted: https://github.com/puppetlabs/rspec-system-serverspec/pull/3
-  gem 'rspec-system-serverspec', :git => 'git://github.com/nagas/rspec-system-serverspec.git', :branch => 'serverspec/0.x'
+  gem 'rake',                                 :require => false
+  gem 'puppetlabs_spec_helper',               :require => false
+  gem 'puppet-lint',                          :require => false
+  gem 'puppet-syntax',                        :require => false
+  gem 'travis-lint',                          :require => false
+  gem 'rspec-system-puppet', '~> 2.0',        :require => false
+  gem 'serverspec', '~> 0.11.0',              :require => false
+  gem 'rspec-system-serverspec', '~> 1.0.1',  :require => false
+  gem 'rspec-puppet',                         :require => false,
+    :git => 'https://github.com/rodjek/rspec-puppet.git', :ref => '544b168'
 end
 
 if puppetversion = ENV['PUPPET_GEM_VERSION']

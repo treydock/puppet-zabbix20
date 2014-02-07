@@ -1,5 +1,5 @@
 shared_examples_for 'zabbix20::agent::config' do
-  it { should include_class('zabbix20::agent') }
+  it { should contain_class('zabbix20::agent') }
 
   it do
     should contain_file('/etc/zabbix_agentd.conf').with({

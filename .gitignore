@@ -8,6 +8,7 @@
 # Testing and development
 .vagrant
 spec/fixtures
+Vagrantfile
 .rspec_system/
 
 # Ruby and RVM

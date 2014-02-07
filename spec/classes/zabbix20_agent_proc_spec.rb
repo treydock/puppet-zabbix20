@@ -7,7 +7,7 @@ describe 'zabbix20::agent::proc' do
 
   it { should create_class('zabbix20::agent::proc') }
   it { should contain_class('zabbix20::params') }
-  it { should include_class('zabbix20::agent') }
+  it { should contain_class('zabbix20::agent') }
 
   it do
     should contain_file('userparameter_proc.conf').with({

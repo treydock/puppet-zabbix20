@@ -22,7 +22,7 @@ describe 'zabbix20::agent' do
   end
 
   it { should contain_class('zabbix20::params') }
-  it { should include_class('zabbix20') }
+  it { should contain_class('zabbix20') }
   it { should contain_class('zabbix20::agent::config') }
 
   it do

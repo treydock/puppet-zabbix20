@@ -17,9 +17,9 @@ describe 'zabbix20::agent::mysql' do
   end
 
   it { should contain_class('zabbix20::params') }
-  it { should include_class('zabbix20') }
-  it { should include_class('zabbix20::agent') }
-  it { should include_class('mysql::server::monitor') }
+  it { should contain_class('zabbix20') }
+  it { should contain_class('zabbix20::agent') }
+  it { should contain_class('mysql::server::monitor') }
 
   it do
     should contain_file('/etc/zabbix_agentd.conf.d/userparameter_mysql.conf').with({

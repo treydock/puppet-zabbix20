@@ -7,7 +7,7 @@ describe 'zabbix20::agent::smart' do
 
   it { should create_class('zabbix20::agent::smart') }
   it { should contain_class('zabbix20::params') }
-  it { should include_class('zabbix20::agent') }
+  it { should contain_class('zabbix20::agent') }
 
   it do
     should contain_sudo__conf('zabbix_smartctl').with({

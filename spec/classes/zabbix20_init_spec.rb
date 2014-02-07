@@ -6,7 +6,7 @@ describe 'zabbix20' do
   let(:facts){ default_facts }
 
   it { should contain_class('zabbix20::params') }
-  it { should include_class('epel') }
+  it { should contain_class('epel') }
 
   it do
     should contain_package('zabbix').with({

@@ -6,6 +6,38 @@ include RSpecSystemPuppet::Helpers
 include Serverspec::Helper::RSpecSystem
 include Serverspec::Helper::DetectOS
 
+module SystemHelper
+  def proj_root
+    File.expand_path(File.join(File.dirname(__FILE__), '..'))
+  end
+
+  def modulefile_dependencies
+    dependencies = []
+
+    modulefile = File.join(proj_root, "Modulefile")
+
+    return false unless File.exists?(modulefile)
+
+    File.open(modulefile).each do |line|
+      if line =~ /^dependency\s+(.*)/
+        dependency = {}
+        m = $1.split(',')
+        fullname = m[0].tr("'|\"", "")
+        dependency[:fullname] = fullname
+        dependency[:name] = fullname.split("/").last
+        dependency[:version] = m[1].tr("'|\"", "").strip unless m[1].nil?
+        dependencies << dependency
+      else
+        next
+      end
+    end
+
+    dependencies
+  end
+end
+
+include SystemHelper
+
 RSpec.configure do |c|
   # Project root for the this module's code
   proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
@@ -17,6 +49,7 @@ RSpec.configure do |c|
   c.tty = true
 
   c.include RSpecSystemPuppet::Helpers
+  c.include SystemHelper
 
   # This is where we 'setup' the nodes before running our tests
   c.before :suite do
@@ -25,11 +58,9 @@ RSpec.configure do |c|
     puppet_master_install
 
     # Install module dependencies
-    shell('puppet module install puppetlabs/mysql --modulepath /etc/puppet/modules --force --version ">=0.6.0 <1.0.0"')
-    shell('puppet module install puppetlabs/stdlib --modulepath /etc/puppet/modules --force')
-    shell('puppet module install stahnma/epel --modulepath /etc/puppet/modules --force')
-    shell('puppet module install puppetlabs/firewall --modulepath /etc/puppet/modules --force')
-    shell('puppet module install saz/sudo --modulepath /etc/puppet/modules --force --version ">=2.0.0"')
+    modulefile_dependencies.each do |mod|
+      shell("[ -d /etc/puppet/modules/#{mod[:name]} ] || puppet module install #{mod[:fullname]} --modulepath /etc/puppet/modules --version '#{mod[:version]}'")
+    end
     
     # Install zabbix20 module
     puppet_module_install(:source => proj_root, :module_name => 'zabbix20')
