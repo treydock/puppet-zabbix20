@@ -155,13 +155,13 @@ def run!
 
   include Logging
 
+  @options = parse(ARGV)
+
   logger.level = @options['debug'] ? Logger::DEBUG : Logger::INFO
   logger.progname = File.basename(__FILE__, ".*")
   logger.formatter = proc do |severtiy, datetime, progname, msg|
     "#{severtiy} -- #{progname}: #{msg}\n"
   end
-
-  @options = parse(ARGV)
 
   logger.debug("Key: #{@options['key']}") if @options['debug']
 
