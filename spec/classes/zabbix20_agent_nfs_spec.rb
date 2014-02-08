@@ -22,7 +22,7 @@ describe 'zabbix20::agent::nfs' do
   end
 
   it "should create UserParameter for nfs" do
-    verify_contents(subject, 'userparameter_nfs.conf', [
+    verify_contents(catalogue, 'userparameter_nfs.conf', [
       'UserParameter=nfsd.proc.hung,pgrep nfsd | xargs ps -o state= | egrep -v -c "R|S"',
       'UserParameter=nfsd.threads.count,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f2',
       'UserParameter=nfsd.threads.fullcnt,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f3',

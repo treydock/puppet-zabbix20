@@ -22,7 +22,7 @@ describe 'zabbix20::agent::fhgfs' do
   end
 
   it "should create UserParameter for fhgfs" do
-    content = subject.resource('file', 'userparameter_fhgfs.conf').send(:parameters)[:content]
+    content = catalogue.resource('file', 'userparameter_fhgfs.conf').send(:parameters)[:content]
     content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
       'UserParameter=fhgfs.client.status,test -f /proc/fs/fhgfs/*/.status && echo "1" || echo "0"',
       'UserParameter=fhgfs.list_unreachable,fhgfs-check-servers | grep UNREACHABLE | sed -r -e \'s/^(.*)\s+\[.*\]:\s+UNREACHABLE/\1/g\' | paste -sd ","',

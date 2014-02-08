@@ -18,7 +18,7 @@ describe 'zabbix20::agent::smart' do
   end
 
   it "should create sudoers file" do
-    verify_contents(subject, '99_zabbix_smartctl', [
+    verify_contents(catalogue, '99_zabbix_smartctl', [
       'zabbix ALL=(ALL) NOPASSWD: /usr/sbin/smartctl -H /dev/*',
     ])
   end
@@ -36,7 +36,7 @@ describe 'zabbix20::agent::smart' do
   end
 
   it "should create UserParameter for smart" do
-    verify_contents(subject, 'userparameter_smart.conf', [
+    verify_contents(catalogue, 'userparameter_smart.conf', [
       "UserParameter=smartctl.health[*],sudo /usr/sbin/smartctl -H $1 | sed -n -r -e 's/^(SMART overall-health self-assessment test result|SMART Health Status): (.*)$/\\2/p' | grep -c 'OK\\|PASSED'",
     ])
   end

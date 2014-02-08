@@ -22,7 +22,7 @@ describe 'zabbix20::agent::proc' do
   end
 
   it do
-    content = subject.resource('file', 'userparameter_proc.conf').send(:parameters)[:content]
+    content = catalogue.resource('file', 'userparameter_proc.conf').send(:parameters)[:content]
     content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
       'UserParameter=proc.mem.ext[*],echo "$(pgrep $([ -z "$2" ] && echo "" || echo "-u $2") $([ -z "$4" ] && echo "" || echo "-f $4") $([ -z "$1" ] && echo "" || echo $1) | xargs ps -orss= | paste -sd+ | bc) * 1024"|bc',
       'UserParameter=proc.cpu.time[*],pgrep $([ -z "$2" ] && echo "" || echo "-u $2") $([ -z "$4" ] && echo "" || echo "-f $4") $([ -z "$1" ] && echo "" || echo $1) | xargs ps -ocputime= | awk \'{ split($$1,t,"[:-]"); $$2=t[4]*3600*24+t[3]*3600+t[2]*60+t[1]; print $$2;}\' | paste -sd+ | bc',

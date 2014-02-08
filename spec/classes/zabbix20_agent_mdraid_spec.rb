@@ -22,7 +22,7 @@ describe 'zabbix20::agent::mdraid' do
   end
 
   it "should create UserParameter for mdraid" do
-    verify_contents(subject, 'userparameter_mdraid.conf', [
+    verify_contents(catalogue, 'userparameter_mdraid.conf', [
       'UserParameter=vfs.md.degraded[*],cat /sys/block/$1/md/degraded',
       'UserParameter=vfs.md.discovery,/usr/local/bin/vfs_md_discovery.rb',
     ])

@@ -33,7 +33,7 @@ describe 'zabbix20::agent::mysql' do
   end
 
   it "/etc/zabbix_agentd.conf.d/userparameter_mysql.conf should have valid content" do
-    verify_contents(subject, '/etc/zabbix_agentd.conf.d/userparameter_mysql.conf', [
+    verify_contents(catalogue, '/etc/zabbix_agentd.conf.d/userparameter_mysql.conf', [
       'UserParameter=mysql.ping,HOME=/var/lib/zabbix mysqladmin ping | grep alive | wc -l',
       'UserParameter=mysql.uptime,HOME=/var/lib/zabbix mysqladmin status | cut -f2 -d":" | cut -f1 -d"T"',
       'UserParameter=mysql.threads,HOME=/var/lib/zabbix mysqladmin status | cut -f3 -d":" | cut -f1 -d"Q"',
@@ -59,7 +59,7 @@ describe 'zabbix20::agent::mysql' do
   end
 
   it "/var/lib/zabbix/.my.cnf should have valid content" do
-    verify_contents(subject, '/var/lib/zabbix/.my.cnf', [
+    verify_contents(catalogue, '/var/lib/zabbix/.my.cnf', [
       'host=localhost',
       'user=zabbix-agent',
       'password=secret',

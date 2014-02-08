@@ -14,7 +14,7 @@ shared_examples_for 'zabbix20::agent::config' do
   end
 
   it do
-    verify_contents(subject, '/etc/zabbix_agentd.conf', [
+    verify_contents(catalogue, '/etc/zabbix_agentd.conf', [
       'PidFile=/var/run/zabbix/zabbix_agentd.pid',
       'LogFile=/var/log/zabbix/zabbix_agentd.log',
       'ListenPort=10050',

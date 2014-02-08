@@ -92,14 +92,15 @@ class zabbix20::agent::zfs (
 
   if $manage_cron {
     cron { 'zabbix_zfs_trapper.rb':
-      ensure    => present,
-      command   => "${scripts_dir}/zabbix_zfs_trapper.rb &> /var/log/zabbix/zabbix_zfs_trapper.log",
-      user      => 'root',
-      hour      => $trapper_hour,
-      minute    => $trapper_minute,
-      month     => absent,
-      monthday  => absent,
-      weekday   => absent,
+      ensure      => present,
+      command     => "${scripts_dir}/zabbix_zfs_trapper.rb >> /var/log/zabbix/zabbix_zfs_trapper.log 2>&1",
+      environment => 'PATH=/sbin:/bin:/usr/sbin:/usr/bin',
+      user        => 'root',
+      hour        => $trapper_hour,
+      minute      => $trapper_minute,
+      month       => absent,
+      monthday    => absent,
+      weekday     => absent,
     }
   }
 }

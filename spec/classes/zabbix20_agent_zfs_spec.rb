@@ -12,7 +12,7 @@ describe 'zabbix20::agent::zfs' do
   it { should contain_sudo__conf('zabbix_zfs').with_priority('10') }
 
   it "create sudoers.d file 10_zabbix_zfs" do
-    content = subject.resource('file', '10_zabbix_zfs').send(:parameters)[:content]
+    content = catalogue.resource('file', '10_zabbix_zfs').send(:parameters)[:content]
     content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
       'Defaults:zabbix !requiretty',
       'Defaults:zabbix !syslog',
@@ -35,7 +35,7 @@ describe 'zabbix20::agent::zfs' do
   end
 
   it "should create userparameter_zfs.conf" do
-    content = subject.resource('file', 'userparameter_zfs.conf').send(:parameters)[:content]
+    content = catalogue.resource('file', 'userparameter_zfs.conf').send(:parameters)[:content]
     content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
       'UserParameter=zpool.health[*],/usr/local/sbin/zabbix_zfs_helper.rb zpool.health[$1]',
       'UserParameter=zfs.arcstat[*],grep "^$1 " /proc/spl/kstat/zfs/arcstats | awk -F" " \'{ print $$3 }\'',
@@ -83,14 +83,15 @@ describe 'zabbix20::agent::zfs' do
 
   it do
     should contain_cron('zabbix_zfs_trapper.rb').with({
-      'ensure'    => 'present',
-      'command'   => "/usr/local/sbin/zabbix_zfs_trapper.rb &> /var/log/zabbix/zabbix_zfs_trapper.log",
-      'user'      => 'root',
-      'hour'      => 'absent',
-      'minute'    => '*/5',
-      'month'     => 'absent',
-      'monthday'  => 'absent',
-      'weekday'   => 'absent',
+      'ensure'      => 'present',
+      'command'     => "/usr/local/sbin/zabbix_zfs_trapper.rb >> /var/log/zabbix/zabbix_zfs_trapper.log 2>&1",
+      'environment' => 'PATH=/sbin:/bin:/usr/sbin:/usr/bin',
+      'user'        => 'root',
+      'hour'        => 'absent',
+      'minute'      => '*/5',
+      'month'       => 'absent',
+      'monthday'    => 'absent',
+      'weekday'     => 'absent',
     })
   end
 
@@ -104,7 +105,7 @@ describe 'zabbix20::agent::zfs' do
   context "sudo_commands => '/sbin/zpool status *,/sbin/zpool list *,/sbin/zfs list *,/sbin/zfs get *'" do
     let(:params) {{ :sudo_commands => '/sbin/zpool status *,/sbin/zpool list *,/sbin/zfs list *,/sbin/zfs get *' }}
     it do
-      content = subject.resource('file', '10_zabbix_zfs').send(:parameters)[:content]
+      content = catalogue.resource('file', '10_zabbix_zfs').send(:parameters)[:content]
       content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
         'Defaults:zabbix !requiretty',
         'Defaults:zabbix !syslog',
