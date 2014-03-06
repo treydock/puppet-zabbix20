@@ -52,3 +52,15 @@ UserParameter=fhgfs.pool.status[*],fhgfs-ctl --listpools --nodetype=$2 | sed -r 
 #  Number of registered FhGFS clients
 #
 UserParameter=fhgfs.client.num,fhgfs-ctl --listnodes --nodetype=client | wc -l
+
+# fhgfs.iostat
+#
+# Arguments:
+#   1 - nodeNumID
+#   2 - type (reqs, qlen or bsy)
+#   3 - history (10-60)
+#
+# Returns:
+#   iostat average over 'history' for 'type'
+#
+UserParameter=fhgfs.metadata.iostat[*],<%= @metadata_iostat_path %> $1 $2 $3

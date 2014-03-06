@@ -29,7 +29,7 @@ class zabbix20::params {
       $agent_service_has_status         = true
       $agent_service_has_restart        = true
       $agent_log_file_size              = '0'
-      $agent_script_dir                 = '/usr/local/bin'
+      $agent_script_dir                 = '/var/lib/zabbix/bin'
     }
 
     default: {

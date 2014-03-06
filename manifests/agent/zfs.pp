@@ -102,5 +102,7 @@ class zabbix20::agent::zfs (
       monthday    => absent,
       weekday     => absent,
     }
+
+    # TODO : Need logrotate for cron job's log file
   }
 }

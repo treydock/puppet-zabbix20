@@ -120,5 +120,16 @@ describe 'zabbix20::agent' do
     })
   end
 
+  it do
+    should contain_file('zabbix-agent-script-dir').with({
+      'ensure'    => 'directory',
+      'path'      => '/var/lib/zabbix/bin',
+      'owner'     => 'zabbix',
+      'group'     => 'zabbix',
+      'mode'      => '0750',
+      'require'   => 'User[zabbix]',
+    })
+  end
+
   it_behaves_like 'zabbix20::agent::config'
 end

@@ -1,5 +1,5 @@
 name    'treydock-zabbix20'
-version '1.0.2'
+version '1.1.0'
 source 'git://github.com/treydock/puppet-zabbix20.git'
 author 'treydock'
 license 'Apache License, Version 2.0'

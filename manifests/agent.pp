@@ -34,6 +34,7 @@ class zabbix20::agent (
   $include_dir          = $zabbix20::params::agent_include_dir
   $conf_path            = $zabbix20::params::agent_conf_path
   $logrotate_file       = $zabbix20::params::agent_logrotate_file
+  $script_dir           = $zabbix20::params::agent_script_dir
 
   $package_require      = $zabbix20::package_require
   $user_name            = $zabbix20::user_name
@@ -124,6 +125,15 @@ class zabbix20::agent (
 
   if $manage_group {
     Group <| title == 'zabbix' |>
+  }
+
+  file { 'zabbix-agent-script-dir':
+    ensure  => directory,
+    path    => $script_dir,
+    owner   => $user_name,
+    group   => $group_name,
+    mode    => '0750',
+    require => User['zabbix'],
   }
 
 }

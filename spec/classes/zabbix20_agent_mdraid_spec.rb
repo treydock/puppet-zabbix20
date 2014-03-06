@@ -24,17 +24,23 @@ describe 'zabbix20::agent::mdraid' do
   it "should create UserParameter for mdraid" do
     verify_contents(catalogue, 'userparameter_mdraid.conf', [
       'UserParameter=vfs.md.degraded[*],cat /sys/block/$1/md/degraded',
-      'UserParameter=vfs.md.discovery,/usr/local/bin/vfs_md_discovery.rb',
+      'UserParameter=vfs.md.discovery,/var/lib/zabbix/bin/vfs_md_discovery.rb',
     ])
+  end
+
+  it do
+    should contain_file('/usr/local/bin/vfs_md_discovery.rb').with({
+      'ensure'    => 'absent',
+    })
   end
 
   it do
     should contain_file('vfs_md_discovery.rb').with({
       'ensure'    => 'present',
-      'path'      => '/usr/local/bin/vfs_md_discovery.rb',
+      'path'      => '/var/lib/zabbix/bin/vfs_md_discovery.rb',
       'source'    => 'puppet:///modules/zabbix20/vfs_md_discovery.rb',
-      'owner'     => 'root',
-      'group'     => 'root',
+      'owner'     => 'zabbix',
+      'group'     => 'zabbix',
       'mode'      => '0755',
       'before'    => 'File[userparameter_mdraid.conf]',
     })

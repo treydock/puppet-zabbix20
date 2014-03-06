@@ -18,7 +18,7 @@ class zabbix20::agent::mdraid inherits zabbix20::params {
 
   include zabbix20::agent
 
-  $script_dir   = $zabbix20::params::agent_script_dir
+  $script_dir   = $zabbix20::agent::script_dir
   $include_dir  = $zabbix20::agent::include_dir
 
   file { 'userparameter_mdraid.conf':
@@ -32,12 +32,16 @@ class zabbix20::agent::mdraid inherits zabbix20::params {
     notify  => Service['zabbix-agent'],
   }
 
+  file { '/usr/local/bin/vfs_md_discovery.rb':
+    ensure  => absent,
+  }
+
   file { 'vfs_md_discovery.rb':
     ensure  => present,
     path    => "${script_dir}/vfs_md_discovery.rb",
     source  => 'puppet:///modules/zabbix20/vfs_md_discovery.rb',
-    owner   => 'root',
-    group   => 'root',
+    owner   => 'zabbix',
+    group   => 'zabbix',
     mode    => '0755',
     before  => File['userparameter_mdraid.conf'],
   }
