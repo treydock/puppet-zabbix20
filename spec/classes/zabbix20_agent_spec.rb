@@ -131,5 +131,10 @@ describe 'zabbix20::agent' do
     })
   end
 
+  context 'when manage_user => false' do
+    let(:pre_condition) { "class { 'zabbix20': manage_user => false }" }
+    it { should contain_file('zabbix-agent-script-dir').with_require('Package[zabbix-agent]') }
+  end
+
   it_behaves_like 'zabbix20::agent::config'
 end

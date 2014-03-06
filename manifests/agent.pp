@@ -54,6 +54,11 @@ class zabbix20::agent (
   }
   validate_bool($with_logrotate_real)
 
+  $script_dir_require = $manage_user ? {
+    true  => User['zabbix'],
+    false => Package['zabbix-agent'],
+  }
+
   if $manage_firewall_real {
     firewall { '100 zabbix-agent':
       ensure  => 'present',
@@ -133,7 +138,7 @@ class zabbix20::agent (
     owner   => $user_name,
     group   => $group_name,
     mode    => '0750',
-    require => User['zabbix'],
+    require => $script_dir_require,
   }
 
 }
