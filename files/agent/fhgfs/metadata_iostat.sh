@@ -19,7 +19,7 @@ case $type in
   ;;
 esac
 
-sum=`fhgfs-ctl --iostat --nodetype=metadata --history=$history $nodeNumID | \
+sum=`fhgfs-ctl --iostat --nodetype=metadata --interval=0 --history=$history $nodeNumID 0<&- | \
   awk -F' ' -v n=$col '{ print \$n }' | \
   egrep '^[0-9]+' | \
   paste -sd+ | \
