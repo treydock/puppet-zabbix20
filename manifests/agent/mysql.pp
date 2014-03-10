@@ -24,6 +24,7 @@ class zabbix20::agent::mysql (
   include zabbix20::agent
   include mysql::server::monitor
 
+  $manage_user  = $zabbix20::manage_user
   $user_name    = $zabbix20::user_name
   $user_home    = $zabbix20::user_home
   $group_name   = $zabbix20::group_name
@@ -42,6 +43,11 @@ class zabbix20::agent::mysql (
     default => $mysql_monitor_username,
   }
 
+  $my_cnf_require = $manage_user ? {
+      true  => User['zabbix'],
+      false => Package['zabbix-agent'],
+    }
+
   file { "${include_dir}/userparameter_mysql.conf":
     ensure  => present,
     content => template('zabbix20/agent/userparameter_mysql.conf.erb'),
@@ -58,7 +64,7 @@ class zabbix20::agent::mysql (
     owner   => $user_name,
     group   => $group_name,
     mode    => '0600',
-    require => User[$user_name],
+    require => $my_cnf_require,
   }
 
 }

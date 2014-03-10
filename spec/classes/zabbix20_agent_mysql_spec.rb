@@ -65,4 +65,20 @@ describe 'zabbix20::agent::mysql' do
       'password=secret',
     ])
   end
+
+  context 'when manage_user => false' do
+    let :pre_condition do
+      [
+        "class { 'mysql::server': }",
+        "class { 'mysql::server::monitor':
+          mysql_monitor_hostname  => 'localhost',
+          mysql_monitor_password  => 'secret',
+          mysql_monitor_username  => 'zabbix-agent',
+        }",
+        "class { 'zabbix20': manage_user => false }",
+      ]
+    end
+
+    it { should contain_file('/var/lib/zabbix/.my.cnf').with_require('Package[zabbix-agent]') }
+  end
 end
