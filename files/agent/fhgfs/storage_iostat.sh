@@ -1,8 +1,10 @@
 #!/bin/bash
 
 [ -z "$1" ] && exit 1 || nodeNumID=$1
-type=$2
+[ -z "$2" ] && exit 2 || type=$2
 [ -z "$3" ] && history=10 || history=$3
+
+[ $nodeNumID = "all" ] && nodeNumID=""
 
 case $type in
 'write')
@@ -25,10 +27,10 @@ case $type in
   ;;
 esac
 
-sum=`fhgfs-ctl --iostat --nodetype=storage --interval=0 --history=$history $nodeNumID 0<&- | \
-  awk -F' ' -v n=$col '{ print \$n }' | \
+sum=`fhgfs-ctl --iostat --nodetype=storage --interval=0 --history=${history} ${nodeNumID} 0<&- | \
+  awk -F' ' -v n=${col} '{ print \$n }' | \
   egrep '^[0-9]+' | \
   paste -sd+ | \
   bc`
 
-echo "$sum / $history"|bc
+echo "${sum} / ${history}"|bc
