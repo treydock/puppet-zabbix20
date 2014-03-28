@@ -22,6 +22,7 @@ class zabbix20::agent::fhgfs inherits zabbix20::params {
   $group_name   = $zabbix20::agent::group_name
 
   $metadata_iostat_path = "${script_dir}/metadata_iostat.sh"
+  $storage_iostat_path  = "${script_dir}/storage_iostat.sh"
 
   file { 'userparameter_fhgfs.conf':
     ensure  => present,
@@ -38,6 +39,16 @@ class zabbix20::agent::fhgfs inherits zabbix20::params {
     ensure  => present,
     path    => $metadata_iostat_path,
     source  => 'puppet:///modules/zabbix20/agent/fhgfs/metadata_iostat.sh',
+    owner   => $user_name,
+    group   => $group_name,
+    mode    => '0755',
+    before  => File['userparameter_fhgfs.conf'],
+  }
+
+  file { 'storage_iostat.sh':
+    ensure  => present,
+    path    => $storage_iostat_path,
+    source  => 'puppet:///modules/zabbix20/agent/fhgfs/storage_iostat.sh',
     owner   => $user_name,
     group   => $group_name,
     mode    => '0755',

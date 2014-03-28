@@ -33,6 +33,7 @@ describe 'zabbix20::agent::fhgfs' do
       'UserParameter=fhgfs.pool.status[*],fhgfs-ctl --listpools --nodetype=$2 | sed -r -n -e \'s|^\s+$1+\s+\[(.*)\]$|\1|p\'',
       'UserParameter=fhgfs.client.num,fhgfs-ctl --listnodes --nodetype=client | wc -l',
       'UserParameter=fhgfs.metadata.iostat[*],/var/lib/zabbix/bin/metadata_iostat.sh $1 $2 $3',
+      'UserParameter=fhgfs.storage.iostat[*],/var/lib/zabbix/bin/storage_iostat.sh $1 $2 $3',
     ]
   end
 
@@ -41,6 +42,18 @@ describe 'zabbix20::agent::fhgfs' do
       'ensure'  => 'present',
       'path'    => "/var/lib/zabbix/bin/metadata_iostat.sh",
       'source'  => 'puppet:///modules/zabbix20/agent/fhgfs/metadata_iostat.sh',
+      'owner'   => 'zabbix',
+      'group'   => 'zabbix',
+      'mode'    => '0755',
+      'before'  => 'File[userparameter_fhgfs.conf]',
+    })
+  end
+
+  it do
+    should contain_file('storage_iostat.sh').with({
+      'ensure'  => 'present',
+      'path'    => "/var/lib/zabbix/bin/storage_iostat.sh",
+      'source'  => 'puppet:///modules/zabbix20/agent/fhgfs/storage_iostat.sh',
       'owner'   => 'zabbix',
       'group'   => 'zabbix',
       'mode'    => '0755',

@@ -64,3 +64,15 @@ UserParameter=fhgfs.client.num,fhgfs-ctl --listnodes --nodetype=client | wc -l
 #   iostat average over 'history' for 'type'
 #
 UserParameter=fhgfs.metadata.iostat[*],<%= @metadata_iostat_path %> $1 $2 $3
+
+# fhgfs.storage.iostat
+#
+# Arguments:
+#   1 - nodeNumID
+#   2 - type (write, read, reqs, qlen or bsy)
+#   3 - history (10-60)
+#
+# Returns:
+#   iostat average over 'history' for 'type'
+#
+UserParameter=fhgfs.storage.iostat[*],<%= @storage_iostat_path %> $1 $2 $3
