@@ -1,0 +1,12 @@
+# UserParameter checks for Filesystems
+
+# vfs.fs.mounted
+#
+# Arguments:
+#   1- Mount point
+#
+# Returns:
+#   1 if mount point is mounted, 0 if not mounted
+#   Type: Integer
+#
+UserParameter=vfs.fs.mounted[*],mountpoint -q $1 && echo 1 || echo 0
