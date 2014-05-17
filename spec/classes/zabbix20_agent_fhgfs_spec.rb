@@ -10,6 +10,17 @@ describe 'zabbix20::agent::fhgfs' do
   it { should contain_class('zabbix20::agent') }
 
   it do
+    should contain_limits__limits('00_zabbix_memlock').with({
+      'ensure'     => 'present',
+      'user'       => 'zabbix',
+      'limit_type' => 'memlock',
+      'hard'       => 'unlimited',
+      'soft'       => 'unlimited',
+      'before'     => 'File[userparameter_fhgfs.conf]',
+    })
+  end
+
+  it do
     should contain_file('userparameter_fhgfs.conf').with({
       'ensure'  =>  'present',
       'path'    => '/etc/zabbix_agentd.conf.d/userparameter_fhgfs.conf',
@@ -59,5 +70,19 @@ describe 'zabbix20::agent::fhgfs' do
       'mode'    => '0755',
       'before'  => 'File[userparameter_fhgfs.conf]',
     })
+  end
+
+  context 'when set_memlock_unlimited => false' do
+    let(:params) {{ :set_memlock_unlimited => false }}
+    it { should_not contain_limits__limits('00_zabbix_memlock') }
+  end
+
+  [
+    'set_memlock_unlimited',
+  ].each do |bool_param|
+    context "with #{bool_param} => 'foo'" do
+      let(:params) {{ bool_param.to_sym => 'foo' }}
+      it { expect { should create_class('zabbix20::agent::zfs') }.to raise_error(Puppet::Error, /is not a boolean/) }
+    end
   end
 end

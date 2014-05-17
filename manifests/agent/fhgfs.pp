@@ -12,7 +12,11 @@
 #
 # Copyright 2013 Trey Dockendorf
 #
-class zabbix20::agent::fhgfs inherits zabbix20::params {
+class zabbix20::agent::fhgfs (
+  $set_memlock_unlimited = true,
+) inherits zabbix20::params {
+
+  validate_bool($set_memlock_unlimited)
 
   include zabbix20::agent
 
@@ -23,6 +27,17 @@ class zabbix20::agent::fhgfs inherits zabbix20::params {
 
   $metadata_iostat_path = "${script_dir}/metadata_iostat.sh"
   $storage_iostat_path  = "${script_dir}/storage_iostat.sh"
+
+  if $set_memlock_unlimited {
+    limits::limits { '00_zabbix_memlock':
+      ensure      => 'present',
+      user        => $user_name,
+      limit_type  => 'memlock',
+      hard        => 'unlimited',
+      soft        => 'unlimited',
+      before      => File['userparameter_fhgfs.conf'],
+    }
+  }
 
   file { 'userparameter_fhgfs.conf':
     ensure  => present,
