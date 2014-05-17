@@ -9,16 +9,7 @@ describe 'zabbix20::agent::fhgfs' do
   it { should contain_class('zabbix20::params') }
   it { should contain_class('zabbix20::agent') }
 
-  it do
-    should contain_limits__limits('00_zabbix_memlock').with({
-      'ensure'     => 'present',
-      'user'       => 'zabbix',
-      'limit_type' => 'memlock',
-      'hard'       => 'unlimited',
-      'soft'       => 'unlimited',
-      'before'     => 'File[userparameter_fhgfs.conf]',
-    })
-  end
+  it { should_not contain_limits__limits('00_zabbix_memlock') }
 
   it do
     should contain_file('userparameter_fhgfs.conf').with({
@@ -72,9 +63,19 @@ describe 'zabbix20::agent::fhgfs' do
     })
   end
 
-  context 'when set_memlock_unlimited => false' do
-    let(:params) {{ :set_memlock_unlimited => false }}
-    it { should_not contain_limits__limits('00_zabbix_memlock') }
+  context 'when set_memlock_unlimited => true' do
+    let(:params) {{ :set_memlock_unlimited => true }}
+
+    it do
+      should contain_limits__limits('00_zabbix_memlock').with({
+        'ensure'     => 'present',
+        'user'       => 'zabbix',
+        'limit_type' => 'memlock',
+        'hard'       => 'unlimited',
+        'soft'       => 'unlimited',
+        'before'     => 'File[userparameter_fhgfs.conf]',
+      })
+    end
   end
 
   [

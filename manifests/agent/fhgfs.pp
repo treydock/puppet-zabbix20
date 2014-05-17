@@ -13,7 +13,7 @@
 # Copyright 2013 Trey Dockendorf
 #
 class zabbix20::agent::fhgfs (
-  $set_memlock_unlimited = true,
+  $set_memlock_unlimited = false,
 ) inherits zabbix20::params {
 
   validate_bool($set_memlock_unlimited)
