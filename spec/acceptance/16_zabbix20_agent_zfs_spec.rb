@@ -9,7 +9,7 @@ describe 'zabbix20::agent::zfs class:' do
       EOS
 
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe file('/etc/sudoers.d/10_zabbix_zfs') do

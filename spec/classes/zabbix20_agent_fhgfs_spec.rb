@@ -74,6 +74,7 @@ describe 'zabbix20::agent::fhgfs' do
         'hard'       => 'unlimited',
         'soft'       => 'unlimited',
         'before'     => 'File[userparameter_fhgfs.conf]',
+        'notify'     => 'Service[zabbix-agent]',
       })
     end
   end

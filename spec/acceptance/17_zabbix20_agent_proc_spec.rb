@@ -8,7 +8,7 @@ describe 'zabbix20::agent::proc class:' do
       EOS
 
       apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe command('zabbix_agentd -t proc.mem.ext[zabbix_agentd]') do
