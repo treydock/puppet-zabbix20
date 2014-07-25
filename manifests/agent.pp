@@ -15,6 +15,7 @@
 # Copyright 2013 Trey Dockendorf
 #
 class zabbix20::agent (
+  $ensure             = 'present',
   $server             = $zabbix20::params::agent_server,
   $server_active      = $zabbix20::params::agent_server_active,
   $service_ensure     = 'running',
@@ -59,7 +60,7 @@ class zabbix20::agent (
     false => Package['zabbix-agent'],
   }
 
-  if $manage_firewall_real {
+  if $manage_firewall_real and $ensure == 'present' {
     firewall { '100 zabbix-agent':
       ensure  => 'present',
       action  => 'accept',
@@ -69,7 +70,7 @@ class zabbix20::agent (
     }
   }
 
-  if $with_logrotate_real {
+  if $with_logrotate_real and $ensure == 'present' {
     file { '/etc/logrotate.d/zabbix-agent':
       ensure  => present,
       path    => $logrotate_file,
@@ -81,64 +82,87 @@ class zabbix20::agent (
     }
   }
 
-  Class['zabbix20::agent'] -> Class['zabbix20::agent::config']
+  case $ensure {
+    'present': {
+      Class['zabbix20::agent'] -> Class['zabbix20::agent::config']
 
-  $config_class = { 'zabbix20::agent::config' => $config_hash }
+      $config_class = { 'zabbix20::agent::config' => $config_hash }
 
-  create_resources( 'class', $config_class )
+      create_resources( 'class', $config_class )
 
-  package { 'zabbix-agent':
-    ensure  => 'present',
-    name    => $package_name,
-    require => $package_require,
-  }
+      package { 'zabbix-agent':
+        ensure  => 'present',
+        name    => $package_name,
+        require => $package_require,
+      }
 
-  service { 'zabbix-agent':
-    ensure      => $service_ensure,
-    enable      => $service_enable,
-    name        => $service_name,
-    hasstatus   => $service_has_status,
-    hasrestart  => $service_has_restart,
-    require     => Package['zabbix-agent'],
-  }
+      service { 'zabbix-agent':
+        ensure      => $service_ensure,
+        enable      => $service_enable,
+        name        => $service_name,
+        hasstatus   => $service_has_status,
+        hasrestart  => $service_has_restart,
+        require     => Package['zabbix-agent'],
+      }
 
-  file { '/etc/zabbix_agentd.conf.d':
-    ensure  => 'directory',
-    path    => $include_dir,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
-  }
+      file { '/etc/zabbix_agentd.conf.d':
+        ensure  => 'directory',
+        path    => $include_dir,
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0755',
+      }
 
-  @file { '/etc/zabbix_agentd.conf':
-    ensure  => 'present',
-    path    => $conf_path,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => Package['zabbix-agent'],
-    notify  => Service['zabbix-agent'],
-  }
+      @file { '/etc/zabbix_agentd.conf':
+        ensure  => 'present',
+        path    => $conf_path,
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+        require => Package['zabbix-agent'],
+        notify  => Service['zabbix-agent'],
+      }
 
-  File <| title == '/var/run/zabbix' |>
+      File <| title == '/var/run/zabbix' |>
 
-  File <| title == '/var/log/zabbix' |>
+      File <| title == '/var/log/zabbix' |>
 
-  if $manage_user {
-    User <| title == 'zabbix' |>
-  }
+      if $manage_user {
+        User <| title == 'zabbix' |>
+      }
 
-  if $manage_group {
-    Group <| title == 'zabbix' |>
-  }
+      if $manage_group {
+        Group <| title == 'zabbix' |>
+      }
 
-  file { 'zabbix-agent-script-dir':
-    ensure  => directory,
-    path    => $script_dir,
-    owner   => $user_name,
-    group   => $group_name,
-    mode    => '0750',
-    require => $script_dir_require,
+      file { 'zabbix-agent-script-dir':
+        ensure  => directory,
+        path    => $script_dir,
+        owner   => $user_name,
+        group   => $group_name,
+        mode    => '0750',
+        require => $script_dir_require,
+      }
+    }
+
+    'absent': {
+      package { 'zabbix-agent':
+        ensure  => 'absent',
+        name    => $package_name,
+      }
+
+      service { 'zabbix-agent':
+        ensure      => 'stopped',
+        enable      => false,
+        name        => $service_name,
+        hasstatus   => $service_has_status,
+        hasrestart  => $service_has_restart,
+      }
+    }
+
+    default: {
+      # Do nothing
+    }
   }
 
 }

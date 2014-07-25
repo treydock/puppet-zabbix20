@@ -25,7 +25,7 @@ class zabbix20::agent::smart (
 
   $include_dir  = $zabbix20::agent::include_dir
 
-  if $manage_sudo {
+  if $manage_sudo and $zabbix20::agent::ensure == 'present' {
     sudo::conf { 'zabbix_smartctl':
       priority  => $sudo_priority,
       content   => 'zabbix ALL=(ALL) NOPASSWD: /usr/sbin/smartctl -H /dev/*',
@@ -33,15 +33,17 @@ class zabbix20::agent::smart (
     }
   }
 
-  file { 'userparameter_smart.conf':
-    ensure  => present,
-    path    => "${include_dir}/userparameter_smart.conf",
-    content => template('zabbix20/agent/userparameter_smart.conf.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => File[$include_dir],
-    notify  => Service['zabbix-agent'],
+  if $zabbix20::agent::ensure == 'present' {
+    file { 'userparameter_smart.conf':
+      ensure  => present,
+      path    => "${include_dir}/userparameter_smart.conf",
+      content => template('zabbix20/agent/userparameter_smart.conf.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      require => File[$include_dir],
+      notify  => Service['zabbix-agent'],
+    }
   }
 
 }

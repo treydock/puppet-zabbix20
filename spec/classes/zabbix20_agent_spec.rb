@@ -136,5 +136,20 @@ describe 'zabbix20::agent' do
     it { should contain_file('zabbix-agent-script-dir').with_require('Package[zabbix-agent]') }
   end
 
+  context 'when ensure => absent' do
+    let(:params) {{ :ensure => 'absent' }}
+    it { should_not contain_firewall('100 zabbix-agent') }
+    it { should_not contain_file('/etc/logrotate.d/zabbix-agent') }
+    it { should contain_package('zabbix-agent').with_ensure('absent') }
+    it { should contain_service('zabbix-agent').with_ensure('stopped') }
+    it { should contain_service('zabbix-agent').with_enable('false') }
+    it { should_not contain_file('/etc/zabbix_agentd.conf.d') }
+    it { should_not contain_file('/var/run/zabbix') }
+    it { should_not contain_file('/var/log/zabbix') }
+    it { should_not contain_user('zabbix') }
+    it { should_not contain_group('zabbix') }
+    it { should_not contain_file('zabbix-agent-script-dir') }
+  end
+
   it_behaves_like 'zabbix20::agent::config'
 end

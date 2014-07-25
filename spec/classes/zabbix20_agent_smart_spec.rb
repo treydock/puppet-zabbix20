@@ -52,4 +52,10 @@ describe 'zabbix20::agent::smart' do
 
     it { should_not contain_sudo__conf('zabbix_smartctl') }
   end
+
+  context 'when zabbix20::agent::ensure => absent' do
+    let(:pre_condition) { "class { 'zabbix20::agent': ensure => 'absent' }" }
+    it { should_not contain_sudo__conf('zabbix_smartctl') }
+    it { should_not contain_file('userparameter_smart.conf') }
+  end
 end

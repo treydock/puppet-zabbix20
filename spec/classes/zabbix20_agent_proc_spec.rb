@@ -28,4 +28,9 @@ describe 'zabbix20::agent::proc' do
       'UserParameter=proc.cpu.time[*],pgrep $([ -z "$2" ] && echo "" || echo "-u $2") $([ -z "$4" ] && echo "" || echo "-f $4") $([ -z "$1" ] && echo "" || echo $1) | xargs ps -ocputime= | awk \'{ split($$1,t,"[:-]"); $$2=t[4]*3600*24+t[3]*3600+t[2]*60+t[1]; print $$2;}\' | paste -sd+ | bc',
     ]
   end
+
+  context 'when zabbix20::agent::ensure => absent' do
+    let(:pre_condition) { "class { 'zabbix20::agent': ensure => 'absent' }" }
+    it { should_not contain_file('userparameter_proc.conf') }
+  end
 end

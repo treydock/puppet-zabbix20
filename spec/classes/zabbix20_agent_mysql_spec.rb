@@ -81,4 +81,12 @@ describe 'zabbix20::agent::mysql' do
 
     it { should contain_file('/var/lib/zabbix/.my.cnf').with_require('Package[zabbix-agent]') }
   end
+
+  context 'when zabbix20::agent::ensure => absent' do
+    let(:pre_condition) { "class { 'zabbix20::agent': ensure => 'absent' }" }
+    it { should_not contain_class('mysql::server::monitor') }
+    it { should_not contain_file('/etc/zabbix_agentd.conf.d/userparameter_mysql.conf') }
+    it { should_not contain_file('/var/lib/zabbix/.my.cnf') }
+  end
+
 end

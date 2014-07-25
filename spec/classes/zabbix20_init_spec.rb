@@ -26,4 +26,10 @@ describe 'zabbix20' do
       'require'   => 'Package[zabbix]',
     })
   end
+
+  context 'when ensure => absent' do
+    let(:params) {{ :ensure => 'absent' }}
+    it { should contain_package('zabbix').with_ensure('absent') }
+    it { should_not contain_file('/etc/zabbix') }
+  end
 end

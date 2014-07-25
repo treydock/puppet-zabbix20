@@ -141,6 +141,16 @@ describe 'zabbix20::agent::zfs' do
   end
 
 
+  context 'when zabbix20::agent::ensure => absent' do
+    let(:pre_condition) { "class { 'zabbix20::agent': ensure => 'absent' }" }
+    it { should_not contain_sudo__conf('zabbix_zfs') }
+    it { should_not contain_file('userparameter_zfs.conf') }
+    it { should_not contain_file('arcstat_get.py') }
+    it { should_not contain_file('zabbix_zfs_helper.rb') }
+    it { should_not contain_file('zabbix_zfs_trapper.rb') }
+    it { should_not contain_cron('zabbix_zfs_trapper.rb') }
+  end
+
   [
     'manage_sudo',
     'manage_cron',

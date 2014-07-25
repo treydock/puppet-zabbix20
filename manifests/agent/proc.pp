@@ -18,15 +18,17 @@ class zabbix20::agent::proc inherits zabbix20::params {
 
   $include_dir  = $zabbix20::agent::include_dir
 
-  file { 'userparameter_proc.conf':
-    ensure  => present,
-    path    => "${include_dir}/userparameter_proc.conf",
-    content => template('zabbix20/agent/userparameter_proc.conf.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => File[$include_dir],
-    notify  => Service['zabbix-agent'],
+  if $zabbix20::agent::ensure == 'present' {
+    file { 'userparameter_proc.conf':
+      ensure  => present,
+      path    => "${include_dir}/userparameter_proc.conf",
+      content => template('zabbix20/agent/userparameter_proc.conf.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      require => File[$include_dir],
+      notify  => Service['zabbix-agent'],
+    }
   }
 
 }

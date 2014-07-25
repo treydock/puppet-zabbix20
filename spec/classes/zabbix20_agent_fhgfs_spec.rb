@@ -79,6 +79,14 @@ describe 'zabbix20::agent::fhgfs' do
     end
   end
 
+  context 'when zabbix20::agent::ensure => absent' do
+    let(:pre_condition) { "class { 'zabbix20::agent': ensure => 'absent' }" }
+    it { should_not contain_limits__limits('00_zabbix_memlock') }
+    it { should_not contain_file('userparameter_fhgfs.conf') }
+    it { should_not contain_file('metadata_iostat.sh') }
+    it { should_not contain_file('storage_iostat.sh') }
+  end
+
   [
     'set_memlock_unlimited',
   ].each do |bool_param|

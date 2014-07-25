@@ -15,6 +15,7 @@
 # Copyright 2013 Trey Dockendorf
 #
 class zabbix20 (
+  $ensure             = 'present',
   $package_name       = $zabbix20::params::package_name,
   $package_require    = $zabbix20::params::package_require,
   $conf_dir           = $zabbix20::params::conf_dir,
@@ -56,54 +57,69 @@ class zabbix20 (
     false => Package['zabbix-agent'],
   }
 
-  package { 'zabbix':
-    ensure  => 'present',
-    name    => $package_name,
-    require => $package_require,
-  }
+  case $ensure {
+    'present': {
+      package { 'zabbix':
+        ensure  => 'present',
+        name    => $package_name,
+        require => $package_require,
+      }
 
-  file { '/etc/zabbix':
-    ensure    => 'directory',
-    path      => $conf_dir,
-    owner     => 'root',
-    group     => 'root',
-    mode      => '0755',
-    require   => Package['zabbix'],
-  }
+      file { '/etc/zabbix':
+        ensure    => 'directory',
+        path      => $conf_dir,
+        owner     => 'root',
+        group     => 'root',
+        mode      => '0755',
+        require   => Package['zabbix'],
+      }
 
-  @file { '/var/run/zabbix':
-    ensure    => 'directory',
-    path      => $pid_dir,
-    owner     => 'root',
-    group     => $group_name,
-    mode      => '0775',
-    require   => $file_require,
-  }
+      @file { '/var/run/zabbix':
+        ensure    => 'directory',
+        path      => $pid_dir,
+        owner     => 'root',
+        group     => $group_name,
+        mode      => '0775',
+        require   => $file_require,
+      }
 
-  @file { '/var/log/zabbix':
-    ensure    => 'directory',
-    path      => $log_dir,
-    owner     => 'root',
-    group     => $group_name,
-    mode      => '0775',
-    require   => $file_require,
-  }
+      @file { '/var/log/zabbix':
+        ensure    => 'directory',
+        path      => $log_dir,
+        owner     => 'root',
+        group     => $group_name,
+        mode      => '0775',
+        require   => $file_require,
+      }
 
-  @user { 'zabbix':
-    ensure     => 'present',
-    name       => $user_name,
-    home       => $user_home,
-    shell      => $user_shell,
-    gid        => $group_name,
-    system     => true,
-    comment    => $user_comment,
-    managehome => true,
-  }
+      @user { 'zabbix':
+        ensure     => 'present',
+        name       => $user_name,
+        home       => $user_home,
+        shell      => $user_shell,
+        gid        => $group_name,
+        system     => true,
+        comment    => $user_comment,
+        managehome => true,
+      }
 
-  @group { 'zabbix':
-    ensure  => 'present',
-    name    => $group_name,
-    system  => true,
+      @group { 'zabbix':
+        ensure  => 'present',
+        name    => $group_name,
+        system  => true,
+      }
+    }
+
+    'absent': {
+      package { 'zabbix':
+        ensure  => 'absent',
+        name    => $package_name,
+      }
+    }
+
+    default: {
+      # Do nothing
+    }
   }
 
 }

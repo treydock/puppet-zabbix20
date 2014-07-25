@@ -26,4 +26,9 @@ describe 'zabbix20::agent::vfs' do
       'UserParameter=vfs.fs.mounted[*],mountpoint -q $1 && echo 1 || echo 0',
     ])
   end
+
+  context 'when zabbix20::agent::ensure => absent' do
+    let(:pre_condition) { "class { 'zabbix20::agent': ensure => 'absent' }" }
+    it { should_not contain_file('userparameter_vfs.conf') }
+  end
 end

@@ -28,4 +28,9 @@ describe 'zabbix20::agent::nfs' do
       'UserParameter=nfsd.threads.fullcnt,egrep "^th" /proc/net/rpc/nfsd | cut -d" " -f3',
     ])
   end
+
+  context 'when zabbix20::agent::ensure => absent' do
+    let(:pre_condition) { "class { 'zabbix20::agent': ensure => 'absent' }" }
+    it { should_not contain_file('userparameter_nfs.conf') }
+  end
 end

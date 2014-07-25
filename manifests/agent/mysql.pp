@@ -22,7 +22,6 @@ class zabbix20::agent::mysql (
 
   include zabbix20
   include zabbix20::agent
-  include mysql::server::monitor
 
   $manage_user  = $zabbix20::manage_user
   $user_name    = $zabbix20::user_name
@@ -48,23 +47,27 @@ class zabbix20::agent::mysql (
       false => Package['zabbix-agent'],
     }
 
-  file { "${include_dir}/userparameter_mysql.conf":
-    ensure  => present,
-    content => template('zabbix20/agent/userparameter_mysql.conf.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => File[$include_dir],
-    notify  => Service['zabbix-agent'],
-  }
+  if $zabbix20::agent::ensure == 'present' {
+    include mysql::server::monitor
 
-  file { "${user_home}/.my.cnf":
-    ensure  => present,
-    content => template('zabbix20/agent/my.cnf.erb'),
-    owner   => $user_name,
-    group   => $group_name,
-    mode    => '0600',
-    require => $my_cnf_require,
+    file { "${include_dir}/userparameter_mysql.conf":
+      ensure  => present,
+      content => template('zabbix20/agent/userparameter_mysql.conf.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      require => File[$include_dir],
+      notify  => Service['zabbix-agent'],
+    }
+
+    file { "${user_home}/.my.cnf":
+      ensure  => present,
+      content => template('zabbix20/agent/my.cnf.erb'),
+      owner   => $user_name,
+      group   => $group_name,
+      mode    => '0600',
+      require => $my_cnf_require,
+    }
   }
 
 }

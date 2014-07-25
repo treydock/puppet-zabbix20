@@ -45,4 +45,11 @@ describe 'zabbix20::agent::mdraid' do
       'before'    => 'File[userparameter_mdraid.conf]',
     })
   end
+
+  context 'when zabbix20::agent::ensure => absent' do
+    let(:pre_condition) { "class { 'zabbix20::agent': ensure => 'absent' }" }
+    it { should_not contain_file('userparameter_mdraid.conf') }
+    it { should_not contain_file('/usr/local/bin/vfs_md_discovery.rb') }
+    it { should_not contain_file('vfs_md_discovery.rb') }
+  end
 end
