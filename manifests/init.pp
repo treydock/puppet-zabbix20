@@ -97,6 +97,7 @@ class zabbix20 (
         name       => $user_name,
         home       => $user_home,
         shell      => $user_shell,
+        uid        => $user_uid,
         gid        => $group_name,
         system     => true,
         comment    => $user_comment,
@@ -106,6 +107,7 @@ class zabbix20 (
       @group { 'zabbix':
         ensure  => 'present',
         name    => $group_name,
+        gid     => $group_gid,
         system  => true,
       }
     }
